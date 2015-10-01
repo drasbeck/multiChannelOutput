@@ -70,15 +70,18 @@ int channelOut78 = 4;
 
 // Man gemmer lyddata samplere
 Sampler ambient12, ambient34, ambient56, ambient78,
-        gallop12, gallop34, gallop56, gallop78,
-        hunde12, hunde34, hunde56, hunde78,
-        jagtselskab12, jagtselskab34, jagtselskab56, jagtselskab78,
+        eftersogningen12, eftersogningen78, // 1 og 7
+        morgenmodet12, morgenmodet78, // 1 og 7
+        jagten12, jagten34, jagten56, jagten78, // alle
+        nummerering56, // 5
+        hjorten34, // 3 og 4
+        hundenBelonnes34, // 4
         groove12;
 
 // Cooldowns
-boolean gallopCooldown = true;
-int gallopCooldownBegin;
-int gallopCooldownDuration = 120000; // millisekunder aka 2 minutter
+boolean jagtenCooldown = true;
+int jagtenCooldownBegin;
+int jagtenCooldownDuration = 120000; // millisekunder aka 2 minutter
 
 Mixer.Info[] mixerInfo;
 float sampleRate = 44100f;
@@ -201,19 +204,19 @@ void draw() {
     text("Output #" + (i + 1), 440, ((i + 1) * 100) - 60);
   }
 
-  //gallop trigger- og cooldown-funktionalitet
-  if (arduino.digitalRead(7) == Arduino.HIGH && gallopCooldown) { //gallop startes når dPIN7 aktiveres
-    gallop12.trigger();
-    gallop34.trigger();
-    gallop56.trigger();
-    gallop78.trigger();
-    gallopCooldown = false;
-    gallopCooldownBegin = millis();
-    println("[" + Math.round(millis() / 1000) + "] Gallop startet, klar igen om " + Math.round(gallopCooldownDuration / 1000) + " sekunder.");
+  //jagten trigger- og cooldown-funktionalitet
+  if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //jagten startes når dPIN7 aktiveres
+    jagten12.trigger();
+    jagten34.trigger();
+    jagten56.trigger();
+    jagten78.trigger();
+    jagtenCooldown = false;
+    jagtenCooldownBegin = millis();
+    println("[" + Math.round(millis() / 1000) + "] Jagten startet, klar igen om " + Math.round(jagtenCooldownDuration / 1000) + " sekunder.");
   }
-  if (gallopCooldownBegin + gallopCooldownDuration < millis() && !gallopCooldown) {
-    gallopCooldown = true;
-    println("[" + Math.round(millis() / 1000) + "] Gallop klar!");
+  if (jagtenCooldownBegin + jagtenCooldownDuration < millis() && !jagtenCooldown) {
+    jagtenCooldown = true;
+    println("[" + Math.round(millis() / 1000) + "] Jagten klar!");
   }
 }
 
@@ -229,21 +232,21 @@ void keyPressed() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
-  play12 = channel12.loadFileIntoBuffer("long_gallop12.mp3", channelBuffer12);
-  gallop12 = new Sampler(channelBuffer12, sampleRate, 1);
-  gallop12.patch(out12);
+  play12 = channel12.loadFileIntoBuffer("jagten12.mp3", channelBuffer12);
+  jagten12 = new Sampler(channelBuffer12, sampleRate, 1);
+  jagten12.patch(out12);
 
-  play34 = channel34.loadFileIntoBuffer("long_gallop34.mp3", channelBuffer34);
-  gallop34 = new Sampler(channelBuffer34, sampleRate, 1);
-  gallop34.patch(out34);
+  play34 = channel34.loadFileIntoBuffer("jagten34.mp3", channelBuffer34);
+  jagten34 = new Sampler(channelBuffer34, sampleRate, 1);
+  jagten34.patch(out34);
 
-  play56 = channel56.loadFileIntoBuffer("long_gallop56.mp3", channelBuffer56);
-  gallop56 = new Sampler(channelBuffer56, sampleRate, 1);
-  gallop56.patch(out56);
+  play56 = channel56.loadFileIntoBuffer("jagten56.mp3", channelBuffer56);
+  jagten56 = new Sampler(channelBuffer56, sampleRate, 1);
+  jagten56.patch(out56);
 
-  play78 = channel78.loadFileIntoBuffer("long_gallop78.mp3", channelBuffer78);
-  gallop78 = new Sampler(channelBuffer78, sampleRate, 1);
-  gallop78.patch(out78);
+  play78 = channel78.loadFileIntoBuffer("jagten78.mp3", channelBuffer78);
+  jagten78 = new Sampler(channelBuffer78, sampleRate, 1);
+  jagten78.patch(out78);
 
   play12 = channel12.loadFileIntoBuffer("groove.mp3", channelBuffer12);
   groove12 = new Sampler(channelBuffer12, sampleRate, 4);
