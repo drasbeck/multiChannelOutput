@@ -232,11 +232,11 @@ void keyPressed() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
-  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3");
+  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
   morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet12.patch(out12);
   
-  play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3");
+  play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3", channelBuffer78);
   morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet78.patch(out78);
   
