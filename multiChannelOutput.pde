@@ -75,7 +75,7 @@ Sampler ambient12, ambient34, ambient56, ambient78,
         jagten12, jagten34, jagten56, jagten78, // alle
         nummerering56, // 5
         hjorten34, // 3 og 4
-        hundenBelonnes34, // 4
+        hundeneBelonnes34, // 4
         groove12;
 
 // Cooldowns
@@ -232,6 +232,14 @@ void keyPressed() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
+  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3");
+  morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
+  morgenmodet12.patch(out12);
+  
+  play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3");
+  morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
+  morgenmodet78.patch(out78);
+  
   play12 = channel12.loadFileIntoBuffer("jagten12.mp3", channelBuffer12);
   jagten12 = new Sampler(channelBuffer12, sampleRate, 1);
   jagten12.patch(out12);
