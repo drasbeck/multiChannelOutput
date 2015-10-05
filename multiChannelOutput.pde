@@ -20,9 +20,13 @@
 //-------------------------------------------------------------------------------------
 // TODO
 // Få styr på lydniveau hos i de forskellige kanaler.
-//   - gøres med setGain på out12 eksempelvis.
+//   - gøres med setGain på out12 eksempelvis -- når vi har højttalerne.
 // Få styr på sound scapes.
 //   - i Ableton Live og Audacity.
+//   - se under samplere hvilke vi mangler.  
+// Lav random afspilning af lydfil.
+// Lav fadeIn, fadeOut, fadeCross.
+// Lav klasser, så det bliver nemmere at sætte op. Til en anden god gang.
 //-------------------------------------------------------------------------------------
 
 import ddf.minim.*;
@@ -69,16 +73,18 @@ float              play78;
 int channelOut78 = 4;
 
 // Man gemmer lyddata samplere
-Sampler ambient12, ambient34, ambient56, ambient78,
-        eftersogningen12, eftersogningen78, // 1 og 7
-        morgenmodet12, morgenmodet78, // 1 og 7
-        jagten12, jagten34, jagten56, jagten78, // alle
-        nummerering56, // 5
-        hjorten34, // 3 og 4
-        hundeneBelonnes34, // 4
-        groove12;
+Sampler
+  ambient12, ambient34, ambient56, ambient78, // alle
+  morgenmodet12, morgenmodet78, // 1 og 7 -- done
+  jagten12, jagten34, jagten56, jagten78, // alle -- done
+  slottene78, // 7 -- IKKE done
+  korsOgStjerner56, // 5 og 6 - IKKE done
+  hundeneBelonnes34, // 4 - IKKE done
+  groove12; // alle kanaler -- bruges til at teste noget helt andet lyd
 
 // Cooldowns
+int warmUp = 60000;
+boolean warmUpDone = false;
 boolean jagtenCooldown = true;
 int jagtenCooldownBegin;
 int jagtenCooldownDuration = 120000; // millisekunder aka 2 minutter
@@ -136,7 +142,10 @@ void setup()
 
   // gem alle lyde i hukommelsen
   loadSounds();
-  println("[" + Math.round(millis() / 1000) + "] Sketch boottid " + millis() + " millisekunder.");
+  println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
+  println("[" + Math.round(millis() / 1000) + "] build 15A282a");
+  println("[" + Math.round(millis() / 1000) + "] boottid " + millis() + " millisekunder.");
+  println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder");
 }
 
 //-------------------------------------------------------------------------------------
@@ -146,6 +155,7 @@ void draw() {
   stroke(255);
 
   // On screen Arduino debugging
+
   for (int i = 0; i <= 13; i++) {
     if (arduino.digitalRead(i) == Arduino.HIGH) {
       fill(243, 552, 117);
@@ -203,20 +213,25 @@ void draw() {
   for (int i = 0; i < 7; i++) {
     text("Output #" + (i + 1), 440, ((i + 1) * 100) - 60);
   }
-
-  //jagten trigger- og cooldown-funktionalitet
-  if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //jagten startes når dPIN7 aktiveres
-    jagten12.trigger();
-    jagten34.trigger();
-    jagten56.trigger();
-    jagten78.trigger();
-    jagtenCooldown = false;
-    jagtenCooldownBegin = millis();
-    println("[" + Math.round(millis() / 1000) + "] Jagten startet, klar igen om " + Math.round(jagtenCooldownDuration / 1000) + " sekunder.");
-  }
-  if (jagtenCooldownBegin + jagtenCooldownDuration < millis() && !jagtenCooldown) {
-    jagtenCooldown = true;
-    println("[" + Math.round(millis() / 1000) + "] Jagten klar!");
+  if (warmUp < millis()) {
+    if (!warmUpDone) {
+      println("[" + Math.round(millis() / 1000) + "] PIR-sensorerne er klar");
+      warmUpDone = true;
+    }
+    //jagten trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //jagten startes når dPIN7 aktiveres
+      jagten12.trigger();
+      jagten34.trigger();
+      jagten56.trigger();
+      jagten78.trigger();
+      jagtenCooldown = false;
+      jagtenCooldownBegin = millis();
+      println("[" + Math.round(millis() / 1000) + "] Jagten startet, klar igen om " + Math.round(jagtenCooldownDuration / 1000) + " sekunder.");
+    }
+    if (jagtenCooldownBegin + jagtenCooldownDuration < millis() && !jagtenCooldown) {
+      jagtenCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Jagten klar!");
+    }
   }
 }
 
@@ -235,11 +250,11 @@ void loadSounds() {
   play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
   morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet12.patch(out12);
-  
+
   play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3", channelBuffer78);
   morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet78.patch(out78);
-  
+
   play12 = channel12.loadFileIntoBuffer("jagten12.mp3", channelBuffer12);
   jagten12 = new Sampler(channelBuffer12, sampleRate, 1);
   jagten12.patch(out12);
