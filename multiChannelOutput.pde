@@ -230,7 +230,7 @@ void draw() {
       jagtenCooldown = false;
       jagtenCooldownBegin = millis();
       jagten++;
-      println("[" + Math.round(millis() / 1000) + "] Jagten startet" + jagten + " gang(e), klar igen om " + Math.round(jagtenCooldownDuration / 1000) + " sekunder.");
+      println("[" + Math.round(millis() / 1000) + "] Jagten startet " + jagten + " gang(e), klar igen om " + Math.round(jagtenCooldownDuration / 1000) + " sekunder.");
     }
     if (jagtenCooldownBegin + jagtenCooldownDuration < millis() && !jagtenCooldown) {
       jagtenCooldown = true;
