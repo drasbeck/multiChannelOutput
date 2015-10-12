@@ -141,7 +141,7 @@ void setup()
 
   //  controlDebug();
   //  arduinoDebug();
-  //  outputDebug();
+    outputDebug();
 
   // gem alle lyde i hukommelsen
   loadSounds();
@@ -260,13 +260,13 @@ void loadSounds() {
   ambience12.patch(out78);
   ambience12.looping = true;
 
-  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
+/*  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
   morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet12.patch(out12);
 
   play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3", channelBuffer78);
   morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
-  morgenmodet78.patch(out78);
+  morgenmodet78.patch(out78);*/
 
   play56 = channel56.loadFileIntoBuffer("Sanktus.wav", channelBuffer56);
   gudKongenOgGeometrien56 = new Sampler(channelBuffer56, sampleRate, 1);
@@ -303,13 +303,14 @@ void loadSounds() {
 // denne bid kode giver en liste over mulige outputs, samt alternativ farve på de valgte outputs.
 void outputDebug() {
   for (int i = 0; i < mixerInfo.length; i++) {
-    if (i == channelOut12  || i == channelOut34  || i == channelOut56  || i == channelOut78) {
+    println("[" + i + "]" + mixerInfo[i].getName());
+    /*if (i == channelOut12  || i == channelOut34  || i == channelOut56  || i == channelOut78) {
       fill(255);
       text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
     } else {
       fill(120);
       text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
-    }
+    }*/
   }
 }
 
