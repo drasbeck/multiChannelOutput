@@ -24,7 +24,7 @@
 // Få styr på sound scapes.
 //   - i Ableton Live og Audacity.
 //   - se under samplere hvilke vi mangler.  
-// Lav random afspilning af lydfil.
+// Lav random afspilning af lydfil AKA birdOfTheMinute
 // Lav fadeIn, fadeOut, fadeCross.
 // Lav klasser, så det bliver nemmere at sætte op. Til en anden god gang.
 //-------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ Arduino arduino;
 Minim              channel12;
 MultiChannelBuffer channelBuffer12;
 AudioOutput        out12;
-AudioPlayer        player12;
+//AudioPlayer        player12;
 float              play12;
 int channelOut12 = 5;
 
@@ -52,7 +52,7 @@ int channelOut12 = 5;
 Minim              channel34;
 MultiChannelBuffer channelBuffer34;
 AudioOutput        out34;
-AudioPlayer        player34;
+//AudioPlayer        player34;
 float              play34;
 int channelOut34 = 3;
 
@@ -60,7 +60,7 @@ int channelOut34 = 3;
 Minim              channel56;
 MultiChannelBuffer channelBuffer56;
 AudioOutput        out56;
-AudioPlayer        player56;
+//AudioPlayer        player56;
 float              play56;
 int channelOut56 = 2;
 
@@ -68,13 +68,13 @@ int channelOut56 = 2;
 Minim              channel78;
 MultiChannelBuffer channelBuffer78;
 AudioOutput        out78;
-AudioPlayer        player78;
+//AudioPlayer        player78;
 float              play78;
 int channelOut78 = 4;
 
 // Man gemmer lyddata samplere
 Sampler
-  ambient12, ambient34, ambient56, ambient78, // alle
+  ambience12, ambience34, ambience56, ambience78, // alle
   morgenmodet12, morgenmodet78, // 1 og 7 -- done
   jagten12, jagten34, jagten56, jagten78, // alle -- done
   slottene78, // 7 -- IKKE done
@@ -158,7 +158,6 @@ void draw() {
   stroke(255);
 
   // On screen Arduino debugging
-
   for (int i = 0; i <= 13; i++) {
     if (arduino.digitalRead(i) == Arduino.HIGH) {
       fill(243, 552, 117);
@@ -244,25 +243,23 @@ void draw() {
 // System test
 void keyPressed() {
   if (key == ' ') {
-    groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
+    //groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
+    ambience12.trigger();
   }
 }
 
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
-  
+
   play12 = channel12.loadFileIntoBuffer("0. Ambience.mp3", channelBuffer12);
   ambience12 = new Sampler(channelBuffer12, sampleRate, 1);
   ambience12.patch(out12);
-  ambience34.patch(out34);
-  ambience56.patch(out56);
-  ambience78.patch(out78);
-  ambience12.trigger();
-  ambience34.trigger();
-  ambience56.trigger();
-  ambience78.trigger();
-  
+  ambience12.patch(out34);
+  ambience12.patch(out56);
+  ambience12.patch(out78);
+  ambience12.looping = true;
+
   play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
   morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet12.patch(out12);
@@ -270,7 +267,7 @@ void loadSounds() {
   play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3", channelBuffer78);
   morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet78.patch(out78);
-  
+
   play56 = channel56.loadFileIntoBuffer("Sanktus.wav", channelBuffer56);
   gudKongenOgGeometrien56 = new Sampler(channelBuffer56, sampleRate, 1);
   gudKongenOgGeometrien56.patch(out56);
