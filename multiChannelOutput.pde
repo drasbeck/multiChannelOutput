@@ -78,7 +78,7 @@ Sampler
   morgenmodet12, morgenmodet78, // 1 og 7 -- done
   jagten12, jagten34, jagten56, jagten78, // alle -- done
   slottene78, // 7 -- IKKE done
-  korsOgStjerner56, // 5 og 6 - IKKE done
+  gudKongenOgGeometrien56, // 6 - done
   hundeneBelonnes34, // 4 - IKKE done
   groove12; // alle kanaler -- bruges til at teste noget helt andet lyd
 
@@ -251,6 +251,18 @@ void keyPressed() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
+  
+  play12 = channel12.loadFileIntoBuffer("0. Ambience.mp3", channelBuffer12);
+  ambience12 = new Sampler(channelBuffer12, sampleRate, 1);
+  ambience12.patch(out12);
+  ambience34.patch(out34);
+  ambience56.patch(out56);
+  ambience78.patch(out78);
+  ambience12.trigger();
+  ambience34.trigger();
+  ambience56.trigger();
+  ambience78.trigger();
+  
   play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
   morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet12.patch(out12);
@@ -258,6 +270,10 @@ void loadSounds() {
   play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3", channelBuffer78);
   morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
   morgenmodet78.patch(out78);
+  
+  play56 = channel56.loadFileIntoBuffer("Sanktus.wav", channelBuffer56);
+  gudKongenOgGeometrien56 = new Sampler(channelBuffer56, sampleRate, 1);
+  gudKongenOgGeometrien56.patch(out56);
 
   play12 = channel12.loadFileIntoBuffer("jagten12.mp3", channelBuffer12);
   jagten12 = new Sampler(channelBuffer12, sampleRate, 1);
