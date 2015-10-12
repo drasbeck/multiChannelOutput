@@ -47,7 +47,7 @@ MultiChannelBuffer channelBuffer12;
 AudioOutput        out12;
 //AudioPlayer        player12;
 float              play12;
-int channelOut12 = 5;
+int channelOut12 = 6;
 
 // output 3&4
 Minim              channel34;
@@ -55,7 +55,7 @@ MultiChannelBuffer channelBuffer34;
 AudioOutput        out34;
 //AudioPlayer        player34;
 float              play34;
-int channelOut34 = 3;
+int channelOut34 = 4;
 
 // output 5&6
 Minim              channel56;
@@ -63,7 +63,7 @@ MultiChannelBuffer channelBuffer56;
 AudioOutput        out56;
 //AudioPlayer        player56;
 float              play56;
-int channelOut56 = 2;
+int channelOut56 = 3;
 
 // output 7&8
 Minim              channel78;
@@ -71,12 +71,18 @@ MultiChannelBuffer channelBuffer78;
 AudioOutput        out78;
 //AudioPlayer        player78;
 float              play78;
-int channelOut78 = 4;
+int channelOut78 = 5;
+
+Minim channelAlle;
+MultiChannelBuffer channelBufferAlle;
+AudioOutput outAlle;
+float playAlle;
+int channelOutAlle = 8;
 
 // Man gemmer lyddata samplere
 Sampler
   ambience12, ambience34, ambience56, ambience78, // alle
-  fugl01, fugl02, fugl03, fugl04 // kanal placeres i birdOfTheMinute()
+  fugl01, fugl02, fugl03, fugl04, // kanal placeres i birdOfTheMinute()
   morgenmodet12, // 1 -- done ???
   jagten12, jagten34, jagten56, jagten78, // alle -- IKKE done - mangler gallop-plask og gallop-træbro
   slottene78, // 7 -- IKKE done - skal mastereres
@@ -98,6 +104,7 @@ boolean warmUpDone = false;
 boolean jagtenCooldown = true;
 int jagtenCooldownBegin;
 int jagtenCooldownDuration = 120000; // millisekunder aka 2 minutter
+int hvertTiendeSekund;
 
 Mixer.Info[] mixerInfo;
 float sampleRate = 44100f;
@@ -140,6 +147,11 @@ void setup()
   channel78.setOutputMixer(mixer78);
   out78 = channel78.getLineOut();
 
+  Mixer mixerAlle = AudioSystem.getMixer(mixerInfo[channelOutAlle]);
+  channelAlle.setOutputMixer(mixerAlle);
+  outAlle = channelAlle.getLineOut();
+  channelBufferAlle = new MultiChannelBuffer(1, 1024);
+
   // til sidst sættes MultiChannelBuffere op.
   channelBuffer12 = new MultiChannelBuffer(1, 1024);
   channelBuffer34 = new MultiChannelBuffer(1, 1024);
@@ -148,10 +160,12 @@ void setup()
 
   //  controlDebug();
   //  arduinoDebug();
-    outputDebug();
+  //  outputDebug();
 
   // gem alle lyde i hukommelsen
   loadSounds();
+
+  // startup tekst
   println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
   println("[" + Math.round(millis() / 1000) + "] build 15A282a");
   println("[" + Math.round(millis() / 1000) + "] boottid " + millis() + " millisekunder.");
@@ -243,8 +257,10 @@ void draw() {
       println("[" + Math.round(millis() / 1000) + "] Jagten klar!");
     }
   }
-  if (millis() % 1000 == 0) {
-    println(ambience12.looping);
+
+  if (millis() > hvertTiendeSekund + 10000) {
+    hvertTiendeSekund = millis();
+    println("[" + Math.round(millis() / 1000) + "] ambience.looping = "+ ambience12.looping);
   }
 }
 
@@ -256,6 +272,22 @@ void keyPressed() {
     //groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
     ambience12.looping = true;
     ambience12.trigger();
+  } else if (key == '1') {
+    groove1.trigger();
+    println(groove1);
+  } else if (key == '2') {
+    groove2.trigger();
+    println(groove2);
+  } else if (key == '3') {
+    groove3.trigger();
+  } else if (key == '4') {
+    groove4.trigger();
+  } else if (key == '5') {
+    groove5.trigger();
+  } else if (key == '6') {
+    groove6.trigger();
+  } else if (key == '7') {
+    groove7.trigger();
   }
 }
 
@@ -263,6 +295,7 @@ void keyPressed() {
 //-------------------------------------------------------------------------------------
 void loadSounds() {
 
+/*
   play12 = channel12.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer12);
   ambience12 = new Sampler(channelBuffer12, sampleRate, 1);
   ambience12.patch(out12);
@@ -270,24 +303,25 @@ void loadSounds() {
   play34 = channel34.loadFileIntoBuffer("0. Ambience34.wav", channelBuffer34);
   ambience34 = new Sampler(channelBuffer34, sampleRate, 1);
   ambience34.patch(out34);
-  
+
   play56 = channel56.loadFileIntoBuffer("0. Ambience56.wav", channelBuffer56);
   ambience56 = new Sampler(channelBuffer56, sampleRate, 1);
   ambience56.patch(out56);
-  
+
   play78 = channel78.loadFileIntoBuffer("0. Ambience78.wav", channelBuffer78);
   ambience78 = new Sampler(channelBuffer78, sampleRate, 1);
   ambience78.patch(out78);
+*/
   
-  ambience12.looping = true;
+  playAlle = channelAlle.loadFileIntoBuffer("0. Ambience12.wav", channelBufferAlle);
+  ambience12 = new Sampler(channelBufferAlle, sampleRate, 1);
+  ambience12.patch(outAlle);
 
-/*  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
-  morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
-  morgenmodet12.patch(out12);
-
-  play78 = channel78.loadFileIntoBuffer("morgenmodet78.mp3", channelBuffer78);
-  morgenmodet78 = new Sampler(channelBuffer12, sampleRate, 1);
-  morgenmodet78.patch(out78);*/
+  /*
+  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
+   morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
+   morgenmodet12.patch(out12);
+   */
 
   play56 = channel56.loadFileIntoBuffer("Sanktus.wav", channelBuffer56);
   gudKongenOgGeometrien56 = new Sampler(channelBuffer56, sampleRate, 1);
@@ -309,12 +343,35 @@ void loadSounds() {
   jagten78 = new Sampler(channelBuffer78, sampleRate, 1);
   jagten78.patch(out78);
 
-  play12 = channel12.loadFileIntoBuffer("groove.mp3", channelBuffer12);
-  groove12 = new Sampler(channelBuffer12, sampleRate, 4);
-  groove12.patch(out12);
-  groove12.patch(out34);
-  groove12.patch(out56);
-  groove12.patch(out78);
+
+  // test af kanaler
+  play12 = channel12.loadFileIntoBuffer("grooveLeft.wav", channelBuffer12);
+  groove1 = new Sampler(channelBuffer12, sampleRate, 4);
+  groove1.patch(out12);
+
+  play12 = channel12.loadFileIntoBuffer("grooveRight.wav", channelBuffer12);
+  groove2 = new Sampler(channelBuffer12, sampleRate, 4);
+  groove2.patch(out12);
+
+  play34 = channel34.loadFileIntoBuffer("grooveLeft.wav", channelBuffer34);
+  groove3 = new Sampler(channelBuffer34, sampleRate, 4);
+  groove3.patch(out34);
+
+  play34 = channel34.loadFileIntoBuffer("grooveRight.wav", channelBuffer34);
+  groove4 = new Sampler(channelBuffer34, sampleRate, 4);
+  groove4.patch(out34);
+
+  play56 = channel56.loadFileIntoBuffer("grooveLeft.wav", channelBuffer56);
+  groove5 = new Sampler(channelBuffer56, sampleRate, 4);
+  groove5.patch(out56);
+
+  play56 = channel56.loadFileIntoBuffer("grooveRight.wav", channelBuffer56);
+  groove6 = new Sampler(channelBuffer56, sampleRate, 4);
+  groove6.patch(out56);
+
+  play78 = channel78.loadFileIntoBuffer("grooveLeft.wav", channelBuffer78);
+  groove7 = new Sampler(channelBuffer78, sampleRate, 4);
+  groove7.patch(out78);
 }
 
 //-------------------------------------------------------------------------------------
@@ -326,12 +383,12 @@ void outputDebug() {
   for (int i = 0; i < mixerInfo.length; i++) {
     println("[" + i + "]" + mixerInfo[i].getName());
     /*if (i == channelOut12  || i == channelOut34  || i == channelOut56  || i == channelOut78) {
-      fill(255);
-      text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
-    } else {
-      fill(120);
-      text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
-    }*/
+     fill(255);
+     text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
+     } else {
+     fill(120);
+     text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
+     }*/
   }
 }
 
