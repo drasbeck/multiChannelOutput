@@ -7,6 +7,7 @@
 // Noter:
 // sample rate skal være 44100
 // wav-filer skal være 16 bit, signed
+// tilsyneladende forsvinder .looping i ny og næ?
 //-------------------------------------------------------------------------------------
 // Skema over hvilke kanaler der læser hvilken side af en lydfil
 // 
@@ -75,15 +76,21 @@ int channelOut78 = 4;
 // Man gemmer lyddata samplere
 Sampler
   ambience12, ambience34, ambience56, ambience78, // alle
-  morgenmodet12, morgenmodet78, // 1 og 7 -- done
-  jagten12, jagten34, jagten56, jagten78, // alle -- done
-  slottene78, // 7 -- IKKE done
-  gudKongenOgGeometrien56, // 6 - done
-  hundeneBelonnes34, // 4 - IKKE done
-  groove12; // alle kanaler -- bruges til at teste noget helt andet lyd
+  fugl01, fugl02, fugl03, fugl04 // kanal placeres i birdOfTheMinute()
+  morgenmodet12, // 1 -- done ???
+  jagten12, jagten34, jagten56, jagten78, // alle -- IKKE done - mangler gallop-plask og gallop-træbro
+  slottene78, // 7 -- IKKE done - skal mastereres
+  gudKongenOgGeometrien56, // 6 - done - hvis musikken spiller
+  hundeneBelonnes34, // 4 - IKKE done - mangler lyden af hunde der æder
+  groove1, groove2, groove3, groove4, groove5, groove6, groove7; // 1 & 2 -- bruges til at teste en helt anden type lyd
 
 // Forbrug
 int jagten;
+int morgenmodet;
+int slottene;
+int gudKongenGeometrien;
+int hundeneBelonnes;
+
 
 // Cooldowns
 int warmUp = 60000;
@@ -236,6 +243,9 @@ void draw() {
       println("[" + Math.round(millis() / 1000) + "] Jagten klar!");
     }
   }
+  if (millis() % 1000 == 0) {
+    println(ambience12.looping);
+  }
 }
 
 //-------------------------------------------------------------------------------------
@@ -244,6 +254,7 @@ void draw() {
 void keyPressed() {
   if (key == ' ') {
     //groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
+    ambience12.looping = true;
     ambience12.trigger();
   }
 }
@@ -252,12 +263,22 @@ void keyPressed() {
 //-------------------------------------------------------------------------------------
 void loadSounds() {
 
-  play12 = channel12.loadFileIntoBuffer("0. Ambience.mp3", channelBuffer12);
+  play12 = channel12.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer12);
   ambience12 = new Sampler(channelBuffer12, sampleRate, 1);
   ambience12.patch(out12);
-  ambience12.patch(out34);
-  ambience12.patch(out56);
-  ambience12.patch(out78);
+
+  play34 = channel34.loadFileIntoBuffer("0. Ambience34.wav", channelBuffer34);
+  ambience34 = new Sampler(channelBuffer34, sampleRate, 1);
+  ambience34.patch(out34);
+  
+  play56 = channel56.loadFileIntoBuffer("0. Ambience56.wav", channelBuffer56);
+  ambience56 = new Sampler(channelBuffer56, sampleRate, 1);
+  ambience56.patch(out56);
+  
+  play78 = channel78.loadFileIntoBuffer("0. Ambience78.wav", channelBuffer78);
+  ambience78 = new Sampler(channelBuffer78, sampleRate, 1);
+  ambience78.patch(out78);
+  
   ambience12.looping = true;
 
 /*  play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
