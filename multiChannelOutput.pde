@@ -45,7 +45,6 @@ Arduino arduino;
 Minim              channel12;
 MultiChannelBuffer channelBuffer12;
 AudioOutput        out12;
-//AudioPlayer        player12;
 float              play12;
 int channelOut12 = 6;
 
@@ -53,7 +52,6 @@ int channelOut12 = 6;
 Minim              channel34;
 MultiChannelBuffer channelBuffer34;
 AudioOutput        out34;
-//AudioPlayer        player34;
 float              play34;
 int channelOut34 = 4;
 
@@ -61,7 +59,6 @@ int channelOut34 = 4;
 Minim              channel56;
 MultiChannelBuffer channelBuffer56;
 AudioOutput        out56;
-//AudioPlayer        player56;
 float              play56;
 int channelOut56 = 3;
 
@@ -69,15 +66,9 @@ int channelOut56 = 3;
 Minim              channel78;
 MultiChannelBuffer channelBuffer78;
 AudioOutput        out78;
-//AudioPlayer        player78;
 float              play78;
 int channelOut78 = 5;
 
-Minim channelAlle;
-MultiChannelBuffer channelBufferAlle;
-AudioOutput outAlle;
-float playAlle;
-int channelOutAlle = 8;
 
 // Man gemmer lyddata samplere
 Sampler
@@ -99,11 +90,11 @@ int hundeneBelonnes;
 
 
 // Cooldowns
-int warmUp = 60000;
+int warmUp = 5000; // normalt 60000
 boolean warmUpDone = false;
 boolean jagtenCooldown = true;
 int jagtenCooldownBegin;
-int jagtenCooldownDuration = 120000; // millisekunder aka 2 minutter
+int jagtenCooldownDuration = 5000; // normalt 120000 millisekunder aka 2 minutter
 int hvertTiendeSekund;
 
 Mixer.Info[] mixerInfo;
@@ -113,7 +104,7 @@ float sampleRate = 44100f;
 //-------------------------------------------------------------------------------------
 void setup()
 {
-  size(512, 800, FX2D);
+  size(512, 800, P2D);
   //textAlign(LEFT, TOP);
 
   // her sættes arduinoen op
@@ -146,11 +137,6 @@ void setup()
   Mixer mixer78 = AudioSystem.getMixer(mixerInfo[channelOut78]);
   channel78.setOutputMixer(mixer78);
   out78 = channel78.getLineOut();
-
-  Mixer mixerAlle = AudioSystem.getMixer(mixerInfo[channelOutAlle]);
-  channelAlle.setOutputMixer(mixerAlle);
-  outAlle = channelAlle.getLineOut();
-  channelBufferAlle = new MultiChannelBuffer(1, 1024);
 
   // til sidst sættes MultiChannelBuffere op.
   channelBuffer12 = new MultiChannelBuffer(1, 1024);
@@ -243,10 +229,16 @@ void draw() {
     }
     //jagten trigger- og cooldown-funktionalitet
     if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //jagten startes når dPIN7 aktiveres
+/*    
       jagten12.trigger();
       jagten34.trigger();
       jagten56.trigger();
       jagten78.trigger();
+*/
+      // BoTM-test
+      birdOfTheMinute();
+
+      // Cooldown mekanisme
       jagtenCooldown = false;
       jagtenCooldownBegin = millis();
       jagten++;
@@ -258,44 +250,47 @@ void draw() {
     }
   }
 
-  if (millis() > hvertTiendeSekund + 10000) {
+  if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
-    println("[" + Math.round(millis() / 1000) + "] ambience.looping = "+ ambience12.looping);
   }
 }
 
+
+
+
+
+
+
+
+
+
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
-// System test
-void keyPressed() {
-  if (key == ' ') {
-    //groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
-    ambience12.looping = true;
-    ambience12.trigger();
-  } else if (key == '1') {
-    groove1.trigger();
-    println(groove1);
-  } else if (key == '2') {
-    groove2.trigger();
-    println(groove2);
-  } else if (key == '3') {
-    groove3.trigger();
-  } else if (key == '4') {
-    groove4.trigger();
-  } else if (key == '5') {
-    groove5.trigger();
-  } else if (key == '6') {
-    groove6.trigger();
-  } else if (key == '7') {
-    groove7.trigger();
-  }
+void birdOfTheMinute() {
+  int fugl = (int)Math.ceil(Math.random() * 4);
+  int kanal = (int)Math.ceil(Math.random() * 7);
+  println("[" + Math.round(millis() / 1000) + "] Fugl: " + fugl);
+  println("[" + Math.round(millis() / 1000) + "] Kanal: " + kanal);
+  Fugl minutFugl = new Fugl(fugl, kanal);
 }
+
+void fuglNummer(int fugl) {
+}
+
+void kanalNummer (int kanal) {
+}
+
+
+
+
+
+
+
 
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
 
-/*
   play12 = channel12.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer12);
   ambience12 = new Sampler(channelBuffer12, sampleRate, 1);
   ambience12.patch(out12);
@@ -311,22 +306,20 @@ void loadSounds() {
   play78 = channel78.loadFileIntoBuffer("0. Ambience78.wav", channelBuffer78);
   ambience78 = new Sampler(channelBuffer78, sampleRate, 1);
   ambience78.patch(out78);
-*/
-  
-  playAlle = channelAlle.loadFileIntoBuffer("0. Ambience12.wav", channelBufferAlle);
-  ambience12 = new Sampler(channelBufferAlle, sampleRate, 1);
-  ambience12.patch(outAlle);
 
-  /*
+/*
   play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
    morgenmodet12 = new Sampler(channelBuffer12, sampleRate, 1);
    morgenmodet12.patch(out12);
-   */
+*/
 
+/*
   play56 = channel56.loadFileIntoBuffer("Sanktus.wav", channelBuffer56);
   gudKongenOgGeometrien56 = new Sampler(channelBuffer56, sampleRate, 1);
   gudKongenOgGeometrien56.patch(out56);
+*/
 
+/*
   play12 = channel12.loadFileIntoBuffer("jagten12.mp3", channelBuffer12);
   jagten12 = new Sampler(channelBuffer12, sampleRate, 1);
   jagten12.patch(out12);
@@ -342,9 +335,10 @@ void loadSounds() {
   play78 = channel78.loadFileIntoBuffer("jagten78.mp3", channelBuffer78);
   jagten78 = new Sampler(channelBuffer78, sampleRate, 1);
   jagten78.patch(out78);
-
+*/
 
   // test af kanaler
+/*
   play12 = channel12.loadFileIntoBuffer("grooveLeft.wav", channelBuffer12);
   groove1 = new Sampler(channelBuffer12, sampleRate, 4);
   groove1.patch(out12);
@@ -372,7 +366,53 @@ void loadSounds() {
   play78 = channel78.loadFileIntoBuffer("grooveLeft.wav", channelBuffer78);
   groove7 = new Sampler(channelBuffer78, sampleRate, 4);
   groove7.patch(out78);
+*/
 }
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// System test og tastatur-input
+void keyPressed() {
+  if (key == ' ') {
+    //groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
+    ambience12.looping = true;
+    ambience12.trigger();
+  } else if (key == '1') {
+    groove1.trigger();
+    println(groove1);
+  } else if (key == '2') {
+    groove2.trigger();
+    println(groove2);
+  } else if (key == '3') {
+    groove3.trigger();
+  } else if (key == '4') {
+    groove4.trigger();
+  } else if (key == '5') {
+    groove5.trigger();
+  } else if (key == '6') {
+    groove6.trigger();
+  } else if (key == '7') {
+    groove7.trigger();
+  }
+}
+
+
+
+
+
+
+
+
+
 
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
