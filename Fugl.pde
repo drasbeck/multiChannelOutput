@@ -1,31 +1,36 @@
 class Fugl {
   // global variables
-  int nummer, kanal;
+  int nummer, kanal, kanalToStr;
   String fil;
+  Sampler fuglTemp;
 
-  // constructor
-  Fugl (int _nummer, int _kanal) {
-    nummer = _nummer;
-    kanal = _kanal;
+  // en fugl bliver afspillet på baggrund af #fugl og #kanal
+  void play(int _nummer, int _kanal) {
+    int fugl = _nummer;
+    int kanal = _kanal;
 
-    return;
+    fugleArray[fugl - 1][kanal - 1].trigger();
   }
 
-  // functions
+  // en fugl bliver afspillet på baggrund af randomiseret fugl og kanal
   void play() {
-    fugl11.trigger();
+    int fugl = (int)Math.ceil(Math.random() * 4);
+    int kanal = (int)Math.ceil(Math.random() * 7);
+    println("afspiller random fugl: fugl" + fugl + ", kanal" + kanal);
+
+    fugleArray[fugl - 1][kanal - 1].trigger();
   }
 
+  // fuglene bliver gjort klar til brug
   void load() {
-
     for (int fugle = 1; fugle <= 4; fugle++) {
       // filnavnet tildeles
       for (int kanaler = 1; kanaler <= 7; kanaler++) {
         int nu = millis();
+        print("[" + Math.round(millis() / 1000) + "] ");
 
-        print(fugle + " " + kanaler + " ");
         if (kanaler % 2 == 0) {
-          fil = "fugl0" + Integer.toString(fugle) + "Right.wav";
+          fil = "fugl0" + Integer.toString(fugle) + "Right.mp3";
           print(fil);
         } else {
           fil = "fugl0" + Integer.toString(fugle) + "Left.wav";
@@ -33,7 +38,7 @@ class Fugl {
         }
 
         // kanalen konverteres til lydkortets setup
-        int kanalToStr = kanal;
+        kanalToStr = kanaler;
         if (kanaler % 2 == 0) {
           kanalToStr = Integer.parseInt(Integer.toString(kanaler - 1) + Integer.toString(kanaler));
           print(" til højre kanal i udgang " + kanalToStr);
@@ -43,8 +48,22 @@ class Fugl {
         }
 
         play12 = channel12.loadFileIntoBuffer(fil, channelBuffer12);
-        fugl11 = new Sampler(channelBuffer12, sampleRate, 1);
-        fugl11.patch(out12);
+        fuglTemp = new Sampler(channelBuffer12, sampleRate, 1);
+        switch(kanalToStr) {
+        case 12:
+          fuglTemp.patch(outArray[0]);
+          break;
+        case 34: 
+          fuglTemp.patch(outArray[1]);
+          break;
+        case 56: 
+          fuglTemp.patch(outArray[2]);
+          break;
+        case 78: 
+          fuglTemp.patch(outArray[3]);
+          break;
+        }
+        fugleArray[fugle - 1][kanaler - 1] = fuglTemp;
         println(" tog " + (millis() - nu) + " millisekunder at loade");
       }
     }
