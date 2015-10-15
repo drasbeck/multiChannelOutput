@@ -73,7 +73,10 @@ int channelOut78 = 5;
 // Man gemmer lyddata samplere
 Sampler
   ambience12, ambience34, ambience56, ambience78, // alle
-  fugl01, fugl02, fugl03, fugl04, // kanal placeres i birdOfTheMinute()
+  fugl11, fugl12, fugl13, fugl14, fugl15, fugl16, fugl17, // fugl type, kanal
+  fugl21, fugl22, fugl23, fugl24, fugl25, fugl26, fugl27, // f.eks. fugl21 =
+  fugl31, fugl32, fugl33, fugl34, fugl35, fugl36, fugl37, // spætmejse på kanal 1
+  fugl41, fugl42, fugl43, fugl44, fugl45, fugl46, fugl47, // 
   morgenmodet12, // 1 -- done ???
   jagten12, jagten34, jagten56, jagten78, // alle -- IKKE done - mangler gallop-plask og gallop-træbro
   slottene78, // 7 -- IKKE done - skal mastereres
@@ -150,6 +153,7 @@ void setup()
 
   // gem alle lyde i hukommelsen
   loadSounds();
+  birdOfTheMinute();
 
   // startup tekst
   println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
@@ -235,8 +239,6 @@ void draw() {
       jagten56.trigger();
       jagten78.trigger();
 */
-      // BoTM-test
-      birdOfTheMinute();
 
       // Cooldown mekanisme
       jagtenCooldown = false;
@@ -252,6 +254,7 @@ void draw() {
 
   if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
+    //birdOfTheMinute();
   }
 }
 
@@ -267,17 +270,14 @@ void draw() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void birdOfTheMinute() {
+  
   int fugl = (int)Math.ceil(Math.random() * 4);
   int kanal = (int)Math.ceil(Math.random() * 7);
-  println("[" + Math.round(millis() / 1000) + "] Fugl: " + fugl);
+  println("[" + Math.round(millis() / 1000) + "] Fugl: 0" + fugl);
   println("[" + Math.round(millis() / 1000) + "] Kanal: " + kanal);
   Fugl minutFugl = new Fugl(fugl, kanal);
-}
+  minutFugl.load();
 
-void fuglNummer(int fugl) {
-}
-
-void kanalNummer (int kanal) {
 }
 
 
@@ -290,7 +290,7 @@ void kanalNummer (int kanal) {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
-
+/*
   play12 = channel12.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer12);
   ambience12 = new Sampler(channelBuffer12, sampleRate, 1);
   ambience12.patch(out12);
@@ -306,6 +306,7 @@ void loadSounds() {
   play78 = channel78.loadFileIntoBuffer("0. Ambience78.wav", channelBuffer78);
   ambience78 = new Sampler(channelBuffer78, sampleRate, 1);
   ambience78.patch(out78);
+*/
 
 /*
   play12 = channel12.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer12);
@@ -384,8 +385,9 @@ void loadSounds() {
 void keyPressed() {
   if (key == ' ') {
     //groove12.trigger(); // mellemrumstasten trigger en test på kanalerne 1 & 2
-    ambience12.looping = true;
-    ambience12.trigger();
+//    ambience12.looping = true;
+//    ambience12.trigger();
+    //birdOfTheMinute();
   } else if (key == '1') {
     groove1.trigger();
     println(groove1);
