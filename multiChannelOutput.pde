@@ -256,6 +256,7 @@ void draw() {
     hvertTiendeSekund = millis();
     //birdOfTheMinute();
   }
+  text("FPS: " + nfs(frameRate, 2, 1), 439, 20);
 }
 
 

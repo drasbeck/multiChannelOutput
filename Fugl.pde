@@ -17,11 +17,12 @@ class Fugl {
   }
 
   void load() {
-    int nu = millis();
 
     for (int fugle = 1; fugle <= 4; fugle++) {
       // filnavnet tildeles
       for (int kanaler = 1; kanaler <= 7; kanaler++) {
+        int nu = millis();
+
         print(fugle + " " + kanaler + " ");
         if (kanaler % 2 == 0) {
           fil = "fugl0" + Integer.toString(fugle) + "Right.wav";
@@ -47,6 +48,5 @@ class Fugl {
         println(" tog " + (millis() - nu) + " millisekunder at loade");
       }
     }
-    // fuglen loades i forhold til hvilken kanal den skal spilles fra.
   }
 }
