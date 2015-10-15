@@ -16,6 +16,7 @@ class Fugl {
   void play() {
     int fugl = (int)Math.ceil(Math.random() * 4);
     int kanal = (int)Math.ceil(Math.random() * 7);
+    print("[" + Math.round(millis() / 1000) + "] ");
     println("afspiller random fugl: fugl" + fugl + ", kanal" + kanal);
 
     fugleArray[fugl - 1][kanal - 1].trigger();
@@ -47,8 +48,8 @@ class Fugl {
           print(" til venstre kanal i udgang " + kanalToStr);
         }
 
-        play12 = channel12.loadFileIntoBuffer(fil, channelBuffer12);
-        fuglTemp = new Sampler(channelBuffer12, sampleRate, 1);
+        buffer = minim.loadFileIntoBuffer(fil, channelBuffer);
+        fuglTemp = new Sampler(channelBuffer, sampleRate, 1);
         switch(kanalToStr) {
         case 12:
           fuglTemp.patch(outArray[0]);
