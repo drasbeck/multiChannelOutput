@@ -40,10 +40,10 @@ Fugl minutFugl;
 
 // sætter output kanalerne op
 int channelOut12, channelOut34, channelOut56, channelOut78;
-boolean channelOut12Set = false,
-        channelOut34Set = false,
-        channelOut56Set = false,
-        channelOut78Set = false;
+boolean channelOut12Set = false, 
+  channelOut34Set = false, 
+  channelOut56Set = false, 
+  channelOut78Set = false;
 
 //int channelOut12 = 6; // 6 på JagtSkov comp
 //int channelOut34 = 2; // 4 på JagtSkov comp
@@ -95,22 +95,22 @@ void setup()
   //textAlign(LEFT, TOP);
 
   for (int i = 0; i < mixerInfo.length; i++) {
-    if(mixerInfo[i].getName() == "Line 1/2 (M-Track Eight)" && channelOut12Set = false) {
+    if (mixerInfo[i].getName() == "Line 1/2 (M-Track Eight)" && channelOut12Set = false) {
       println("Line 12 = softwareMixerOut# " + i);
       channelOut12 = i;
       channelOut12Set = true;
     };
-    if(mixerInfo[i].getName() == "Line 3/4 (M-Track Eight)" && channelOut34Set = false) {
+    if (mixerInfo[i].getName() == "Line 3/4 (M-Track Eight)" && channelOut34Set = false) {
       println("Line 34 = softwareMixerOut# " + i);
       channelOut34 = i;
       channelOut34Set = true;
     };
-    if(mixerInfo[i].getName() == "Line 5/6 (M-Track Eight)" && channelOut56Set = false) {
+    if (mixerInfo[i].getName() == "Line 5/6 (M-Track Eight)" && channelOut56Set = false) {
       println("Line 56 = softwareMixerOut# " + i);
       channelOut56 = i;
       channelOut56Set = true;
     };
-    if(mixerInfo[i].getName() == "Line 7/8 (M-Track Eight)" && channelOut78Set = false) {
+    if (mixerInfo[i].getName() == "Line 7/8 (M-Track Eight)" && channelOut78Set = false) {
       println("Line 78 = softwareMixerOut# " + i);
       channelOut78 = i;
       channelOut78Set = true;
@@ -294,6 +294,9 @@ void draw() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
+  buffer = minim.loadFileIntoBuffer("04 No. 1 Menuetto - trio.wav", channelBuffer);
+  gudKongenOgGeometrien56 = new Sampler(channelBuffer, sampleRate, 1);
+  gudKongenOgGeometrien56.patch(outArray[2]);
   /*
   buffer = minim.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer);
    ambience12 = new Sampler(channelBuffer, sampleRate, 1);
@@ -407,7 +410,7 @@ void keyPressed() {
   } else if (key == '7') {
     groove[6].trigger();
   } else if (key == '8') {
-    minutFugl.play(2,1);
-    minutFugl.play(2,2);
+    minutFugl.play(2, 1);
+    minutFugl.play(2, 2);
   }
 }
