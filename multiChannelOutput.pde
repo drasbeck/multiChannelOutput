@@ -39,10 +39,16 @@ Debug debugger;
 Fugl minutFugl;
 
 // sætter output kanalerne op
-int channelOut12 = 2; // 6 på JagtSkov comp
-int channelOut34 = 2; // 4 på JagtSkov comp
-int channelOut56 = 2; // 3 på JagtSkov comp
-int channelOut78 = 2; // 5 på JagtSkov comp
+int channelOut12, channelOut34, channelOut56, channelOut78;
+boolean channelOut12Set = false,
+        channelOut34Set = false,
+        channelOut56Set = false,
+        channelOut78Set = false;
+
+//int channelOut12 = 6; // 6 på JagtSkov comp
+//int channelOut34 = 2; // 4 på JagtSkov comp
+//int channelOut56 = 2; // 3 på JagtSkov comp
+//int channelOut78 = 2; // 5 på JagtSkov comp
 
 Minim              minim;
 MultiChannelBuffer channelBuffer;
@@ -87,6 +93,38 @@ void setup()
   // vindue sættes op
   size(512, 800, P2D);
   //textAlign(LEFT, TOP);
+
+  for (int i = 0; i < mixerInfo.length; i++) {
+    if(mixerInfo[i].getName() == "Line 1/2 (M-Track Eight)" && channelOut12Set = false) {
+      println("Line 12 = softwareMixerOut# " + i);
+      channelOut12 = i;
+      channelOut12Set = true;
+    };
+    if(mixerInfo[i].getName() == "Line 3/4 (M-Track Eight)" && channelOut34Set = false) {
+      println("Line 34 = softwareMixerOut# " + i);
+      channelOut34 = i;
+      channelOut34Set = true;
+    };
+    if(mixerInfo[i].getName() == "Line 5/6 (M-Track Eight)" && channelOut56Set = false) {
+      println("Line 56 = softwareMixerOut# " + i);
+      channelOut56 = i;
+      channelOut56Set = true;
+    };
+    if(mixerInfo[i].getName() == "Line 7/8 (M-Track Eight)" && channelOut78Set = false) {
+      println("Line 78 = softwareMixerOut# " + i);
+      channelOut78 = i;
+      channelOut78Set = true;
+    } else {
+      println("softwareMixerOut# " + i + " skal ikke bruges i denne omgang");
+    }
+    /*if (i == channelOut12  || i == channelOut34  || i == channelOut56  || i == channelOut78) {
+     fill(255);
+     text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
+     } else {
+     fill(120);
+     text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
+     }*/
+  }
 
   // random fugle-klassen klargøres
   minutFugl = new Fugl();
@@ -240,7 +278,7 @@ void draw() {
 
   if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
-    minutFugl.play();
+    //minutFugl.play();
   }
 }
 
