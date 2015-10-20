@@ -283,18 +283,20 @@ void draw() {
 
   text("FPS: " + nfs(frameRate, 2, 1), 439, 20);
 
+  /*
   if (millis() > ambienceLoop + ambienceDuration) {
-    if (ambienceDuration != 400000) {
-      println("[" + Math.round(millis() / 1000) + "] Ambience startet.");
-    } else {
-      println("[" + Math.round(millis() / 1000) + "] Ambience genstartet.");
-    }
-    ambienceDuration = 425000;
-    ambienceLoop = millis();
-    for (int i = 0; i < ambience.length; i++) {
-      ambience[i].trigger();
-    }
-  }
+   if (ambienceDuration != 60000) {
+   println("[" + Math.round(millis() / 1000) + "] Ambience startet.");
+   } else {
+   println("[" + Math.round(millis() / 1000) + "] Ambience genstartet.");
+   }
+   ambienceDuration = 60000;
+   ambienceLoop = millis();
+   for (int i = 0; i < ambience.length; i++) {
+   ambience[i].trigger();
+   }
+   }
+   */
 
   if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
@@ -303,6 +305,9 @@ void draw() {
 
   if (millis() > hvertMinut + 59999) {
     hvertMinut = millis();
+    for (int i = 0; i < ambience.length; i++) {
+      ambience[i].trigger();
+    }
     minutFugl.play();
   }
 }
