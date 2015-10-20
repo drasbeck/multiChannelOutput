@@ -63,6 +63,7 @@ Sampler
   slottene78, // 7 -- IKKE done - skal mastereres
   gudKongenOgGeometrien56, // 6 - done - hvis musikken spiller
   hundeneBelonnes34, // 4 - IKKE done - mangler lyden af hunde der æder
+  ambience[] = new Sampler [4], 
   groove[] = new Sampler[7], grooveTemp, // bruges til at teste en helt anden type lyd
   fugleArray[][] = new Sampler[4][7];
 
@@ -81,7 +82,10 @@ boolean warmUpDone = false;
 boolean jagtenCooldown = true;
 int jagtenCooldownBegin;
 int jagtenCooldownDuration = 5000; // normalt 120000 millisekunder aka 2 minutter
-int hvertTiendeSekund;
+int ambienceLoop, ambienceDuration;
+
+// Intervaller
+int hvertTiendeSekund, hvertMinut;
 
 Mixer.Info[] mixerInfo;
 float sampleRate = 44100f;
@@ -94,28 +98,32 @@ void setup()
   size(512, 800, P2D);
   //textAlign(LEFT, TOP);
 
+  mixerInfo = AudioSystem.getMixerInfo();
+
   for (int i = 0; i < mixerInfo.length; i++) {
-    if (mixerInfo[i].getName() == "Line 1/2 (M-Track Eight)" && channelOut12Set = false) {
-      println("Line 12 = softwareMixerOut# " + i);
+    //println("[" + Math.round(millis() / 1000) + "] " + mixerInfo[i].getName());
+    String mixerName = mixerInfo[i].getName();
+    if (mixerName.equals("Line 1/2 (M-Track Eight)") && channelOut12Set == false) {
+      println("[" + Math.round(millis() / 1000) + "] Line 12 = softwareMixerOut #" + i);
       channelOut12 = i;
       channelOut12Set = true;
     };
-    if (mixerInfo[i].getName() == "Line 3/4 (M-Track Eight)" && channelOut34Set = false) {
-      println("Line 34 = softwareMixerOut# " + i);
+    if (mixerName.equals("Line 3/4 (M-Track Eight)") && channelOut34Set == false) {
+      println("[" + Math.round(millis() / 1000) + "] Line 34 = softwareMixerOut #" + i);
       channelOut34 = i;
       channelOut34Set = true;
     };
-    if (mixerInfo[i].getName() == "Line 5/6 (M-Track Eight)" && channelOut56Set = false) {
-      println("Line 56 = softwareMixerOut# " + i);
+    if (mixerName.equals("Line 5/6 (M-Track Eight)") && channelOut56Set == false) {
+      println("[" + Math.round(millis() / 1000) + "] Line 56 = softwareMixerOut #" + i);
       channelOut56 = i;
       channelOut56Set = true;
     };
-    if (mixerInfo[i].getName() == "Line 7/8 (M-Track Eight)" && channelOut78Set = false) {
-      println("Line 78 = softwareMixerOut# " + i);
+    if (mixerName.equals("Line 7/8 (M-Track Eight)") && channelOut78Set == false) {
+      println("[" + Math.round(millis() / 1000) + "] Line 78 = softwareMixerOut #" + i);
       channelOut78 = i;
       channelOut78Set = true;
     } else {
-      println("softwareMixerOut# " + i + " skal ikke bruges i denne omgang");
+      //println("[" + Math.round(millis() / 1000) + "] softwareMixerOut# " + i + " skal ikke bruges i denne omgang");
     }
     /*if (i == channelOut12  || i == channelOut34  || i == channelOut56  || i == channelOut78) {
      fill(255);
@@ -145,7 +153,6 @@ void setup()
   minim = new Minim(this);
 
   // og så sættes mixere op med hver deres line out.
-  mixerInfo = AudioSystem.getMixerInfo();
 
   Mixer mixer12 = AudioSystem.getMixer(mixerInfo[channelOut12]);
   minim.setOutputMixer(mixer12);
@@ -180,8 +187,8 @@ void setup()
   // startup tekst
   println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
   println("[" + Math.round(millis() / 1000) + "] build 15A282a");
-  println("[" + Math.round(millis() / 1000) + "] boottid " + millis() + " millisekunder.");
-  println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder");
+  println("[" + Math.round(millis() / 1000) + "] Boottid " + millis() + " millisekunder.");
+  println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder.");
 }
 
 //-------------------------------------------------------------------------------------
@@ -250,7 +257,7 @@ void draw() {
   }
   if (warmUp < millis()) {
     if (!warmUpDone) {
-      println("[" + Math.round(millis() / 1000) + "] PIR-sensorerne er klar");
+      println("[" + Math.round(millis() / 1000) + "] PIR-sensorerne er klar.");
       warmUpDone = true;
     }
     //jagten trigger- og cooldown-funktionalitet
@@ -270,15 +277,33 @@ void draw() {
     }
     if (jagtenCooldownBegin + jagtenCooldownDuration < millis() && !jagtenCooldown) {
       jagtenCooldown = true;
-      println("[" + Math.round(millis() / 1000) + "] Jagten klar!");
+      println("[" + Math.round(millis() / 1000) + "] Jagten klar.");
     }
   }
 
   text("FPS: " + nfs(frameRate, 2, 1), 439, 20);
 
+  if (millis() > ambienceLoop + ambienceDuration) {
+    if (ambienceDuration != 400000) {
+      println("[" + Math.round(millis() / 1000) + "] Ambience startet.");
+    } else {
+      println("[" + Math.round(millis() / 1000) + "] Ambience genstartet.");
+    }
+    ambienceDuration = 425000;
+    ambienceLoop = millis();
+    for (int i = 0; i < ambience.length; i++) {
+      ambience[i].trigger();
+    }
+  }
+
   if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
     //minutFugl.play();
+  }
+
+  if (millis() > hvertMinut + 59999) {
+    hvertMinut = millis();
+    minutFugl.play();
   }
 }
 
@@ -297,23 +322,26 @@ void loadSounds() {
   buffer = minim.loadFileIntoBuffer("04 No. 1 Menuetto - trio.wav", channelBuffer);
   gudKongenOgGeometrien56 = new Sampler(channelBuffer, sampleRate, 1);
   gudKongenOgGeometrien56.patch(outArray[2]);
-  /*
-  buffer = minim.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer);
-   ambience12 = new Sampler(channelBuffer, sampleRate, 1);
-   ambience12.patch(outArray[0]);
-   
-   buffer = minim.loadFileIntoBuffer("0. Ambience34.wav", channelBuffer);
-   ambience34 = new Sampler(channelBuffer, sampleRate, 1);
-   ambience34.patch(outArray[1]);
-   
-   buffer = minim.loadFileIntoBuffer("0. Ambience56.wav", channelBuffer);
-   ambience56 = new Sampler(channelBuffer, sampleRate, 1);
-   ambience56.patch(outArray[2]);
-   
-   buffer = minim.loadFileIntoBuffer("0. Ambience78.wav", channelBuffer);
-   ambience78 = new Sampler(channelBuffer, sampleRate, 1);
-   ambience78.patch(outArray[3]);
-   */
+
+  for (int i = 0; i < ambience.length; i++) {
+    int nu = millis();
+
+    buffer = minim.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer);
+    ambience[i] = new Sampler(channelBuffer, sampleRate, 1);
+    ambience[i].patch(outArray[i]);
+
+    print("[" + Math.round(millis() / 1000) + "] ambience til udgang " );    
+    if (i == 0) {
+      print("12");
+    } else if (i == 1) {
+      print("34");
+    } else if (i == 2) {
+      print("56");
+    } else if (i == 3) {
+      print("78");
+    }
+    println(" tog " + (millis() - nu) + " millisekunder at loade");
+  }
 
   /*
   buffer = minim.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer);
@@ -396,8 +424,11 @@ void keyPressed() {
   if (key == ' ') {
     minutFugl.play();
   } else if (key == '1') {
-    groove[0].trigger();
+    //groove[0].trigger();
+    //groove[0].trigger();
+    //ambience.looping = true;
   } else if (key == '2') {
+    groove[1].looping = true;
     groove[1].trigger();
   } else if (key == '3') {
     groove[2].trigger();

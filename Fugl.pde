@@ -17,7 +17,7 @@ class Fugl {
     int fugl = (int)Math.ceil(Math.random() * 4);
     int kanal = (int)Math.ceil(Math.random() * 7);
     print("[" + Math.round(millis() / 1000) + "] ");
-    println("afspiller random fugl: fugl" + fugl + ", kanal" + kanal);
+    println("Afspiller fugl #" + fugl + ", i kanal #" + kanal + ".");
 
     fugleArray[fugl - 1][kanal - 1].trigger();
   }
