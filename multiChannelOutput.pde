@@ -34,28 +34,30 @@ import processing.serial.*;
 import cc.arduino.*;
 import org.firmata.*;
 
+
+// Blandet
 Arduino arduino;
 Debug debugger;
+Mixer.Info[] mixerInfo;
 Fugl minutFugl;
+float sampleRate = 44100f;
 
-// sætter output kanalerne op
+
+// Output kanaler
 int channelOut12, channelOut34, channelOut56, channelOut78;
 boolean channelOut12Set = false, 
   channelOut34Set = false, 
   channelOut56Set = false, 
   channelOut78Set = false;
 
-//int channelOut12 = 6; // 6 på JagtSkov comp
-//int channelOut34 = 2; // 4 på JagtSkov comp
-//int channelOut56 = 2; // 3 på JagtSkov comp
-//int channelOut78 = 2; // 5 på JagtSkov comp
-
+// minim stuff
 Minim              minim;
 MultiChannelBuffer channelBuffer;
 float              buffer;
 AudioOutput        outArray[] = new AudioOutput[4];
 
-// Man gemmer lyddata samplere
+
+// Samplere til lyd
 Sampler
   ambience12, ambience34, ambience56, ambience78, // alle
   morgenmodet12, // 1 -- done ???
@@ -84,11 +86,10 @@ int jagtenCooldownBegin;
 int jagtenCooldownDuration = 5000; // normalt 120000 millisekunder aka 2 minutter
 int ambienceLoop, ambienceDuration;
 
+
 // Intervaller
 int hvertTiendeSekund, hvertMinut;
 
-Mixer.Info[] mixerInfo;
-float sampleRate = 44100f;
 
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
@@ -98,6 +99,7 @@ void setup()
   size(512, 800, P2D);
   //textAlign(LEFT, TOP);
 
+  // lydkortets outputkanaler findes og aktiveres
   mixerInfo = AudioSystem.getMixerInfo();
 
   for (int i = 0; i < mixerInfo.length; i++) {
@@ -125,35 +127,30 @@ void setup()
     } else {
       //println("[" + Math.round(millis() / 1000) + "] softwareMixerOut# " + i + " skal ikke bruges i denne omgang");
     }
-    /*if (i == channelOut12  || i == channelOut34  || i == channelOut56  || i == channelOut78) {
-     fill(255);
-     text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
-     } else {
-     fill(120);
-     text("[" + i + "] " + mixerInfo[i].getName(), 15, 20 + i * 25, i);
-     }*/
   }
+
 
   // random fugle-klassen klargøres
   minutFugl = new Fugl();
 
+
   // debugger sættes op
   debugger = new Debug();
 
-  // her sættes arduinoen op
+
+  // arduinoen addreseres og serieforbindelse oprettes
   arduino = new Arduino(this, Arduino.list()[1], 57600); // [1] på JagtSkov computeren
   for (int i = 0; i <= 13; i++) {
     arduino.pinMode(i, Arduino.INPUT);
   }
 
-  // hver kanal får en Minim til at lege med
-  minim = new Minim(this);
-  minim = new Minim(this);
-  minim = new Minim(this);
-  minim = new Minim(this);
 
-  // og så sættes mixere op med hver deres line out.
+  // kanalerne får en Minim og en MultiChannelBuffer til deling
+  minim = new Minim(this);
+  channelBuffer = new MultiChannelBuffer(1, 1024);
 
+
+  // mixere sættes op med hver deres line out.
   Mixer mixer12 = AudioSystem.getMixer(mixerInfo[channelOut12]);
   minim.setOutputMixer(mixer12);
   outArray[0] = minim.getLineOut();
@@ -170,16 +167,12 @@ void setup()
   minim.setOutputMixer(mixer78);
   outArray[3] = minim.getLineOut();
 
-  // til sidst sættes MultiChannelBuffere op.
-  channelBuffer = new MultiChannelBuffer(1, 1024);
-  channelBuffer = new MultiChannelBuffer(1, 1024);
-  channelBuffer = new MultiChannelBuffer(1, 1024);
-  channelBuffer = new MultiChannelBuffer(1, 1024);
 
   // de forskellige debuggers
   //  debugger.arduino();
   //  debugger.output();
   //  debugger.control();
+
 
   // gem alle lyde i hukommelsen
   loadSounds();
@@ -281,22 +274,9 @@ void draw() {
     }
   }
 
-  text("FPS: " + nfs(frameRate, 2, 1), 439, 20);
 
-  /*
-  if (millis() > ambienceLoop + ambienceDuration) {
-   if (ambienceDuration != 60000) {
-   println("[" + Math.round(millis() / 1000) + "] Ambience startet.");
-   } else {
-   println("[" + Math.round(millis() / 1000) + "] Ambience genstartet.");
-   }
-   ambienceDuration = 60000;
-   ambienceLoop = millis();
-   for (int i = 0; i < ambience.length; i++) {
-   ambience[i].trigger();
-   }
-   }
-   */
+  text("FPS: " + nfs(frameRate, 2, 1), 439, 20); // framerate, mest bare Proof of Life
+
 
   if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
@@ -427,26 +407,23 @@ void loadSounds() {
 // System test og tastatur-input
 void keyPressed() {
   if (key == ' ') {
-    minutFugl.play();
+    minutFugl.play(); // spil en vilkårlig minut fugl
   } else if (key == '1') {
-    //groove[0].trigger();
-    //groove[0].trigger();
-    //ambience.looping = true;
+    groove[0].trigger(); // test kanal 1
   } else if (key == '2') {
-    groove[1].looping = true;
-    groove[1].trigger();
+    groove[1].trigger(); // test kanal 2
   } else if (key == '3') {
-    groove[2].trigger();
+    groove[2].trigger(); // test kanal 3
   } else if (key == '4') {
-    groove[3].trigger();
+    groove[3].trigger(); // test kanal 4
   } else if (key == '5') {
-    groove[4].trigger();
+    groove[4].trigger(); // test kanal 5
   } else if (key == '6') {
-    groove[5].trigger();
+    groove[5].trigger(); // test kanal 6
   } else if (key == '7') {
-    groove[6].trigger();
+    groove[6].trigger(); // test kanal 7
   } else if (key == '8') {
-    minutFugl.play(2, 1);
-    minutFugl.play(2, 2);
+  } else if (key == '9') {
+  } else if (key == '0') {
   }
 }
