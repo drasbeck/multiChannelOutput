@@ -63,7 +63,7 @@ Sampler
   morgenmodet12, // 1 -- done ???
   jagten12, jagten34, jagten56, jagten78, // alle -- IKKE done - mangler gallop-plask og gallop-træbro
   slottene78, // 7 -- IKKE done - skal mastereres
-  gudKongenOgGeometrien56, // 6 - done - hvis musikken spiller
+  ideernesVandring56, // 6 - done - hvis musikken spiller
   hundeneBelonnes34, // 4 - IKKE done - mangler lyden af hunde der æder
   ambience[] = new Sampler [4], 
   groove[] = new Sampler[7], grooveTemp, // bruges til at teste en helt anden type lyd
@@ -305,8 +305,8 @@ void draw() {
 //-------------------------------------------------------------------------------------
 void loadSounds() {
   buffer = minim.loadFileIntoBuffer("04 No. 1 Menuetto - trio.wav", channelBuffer);
-  gudKongenOgGeometrien56 = new Sampler(channelBuffer, sampleRate, 1);
-  gudKongenOgGeometrien56.patch(outArray[2]);
+  ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
+  ideernesVandring56.patch(outArray[2]);
 
   for (int i = 0; i < ambience.length; i++) {
     int nu = millis();
@@ -336,8 +336,8 @@ void loadSounds() {
 
   /*
   buffer = minim.loadFileIntoBuffer("Sanktus.wav", channelBuffer);
-   gudKongenOgGeometrien56 = new Sampler(channelBuffer, sampleRate, 1);
-   gudKongenOgGeometrien56.patch(outArray[2]);
+   ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
+   ideernesVandring56.patch(outArray[2]);
    */
 
   /*
@@ -407,7 +407,8 @@ void loadSounds() {
 // System test og tastatur-input
 void keyPressed() {
   if (key == ' ') {
-    minutFugl.play(); // spil en vilkårlig minut fugl
+    //minutFugl.play(); // spil en vilkårlig minut fugl
+    ideernesVandring56.trigger();
   } else if (key == '1') {
     groove[0].trigger(); // test kanal 1
   } else if (key == '2') {
