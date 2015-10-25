@@ -71,24 +71,46 @@ Sampler
 
 
 // Forbrug
-int jagten;
 int morgenmodet;
+int jagten;
 int slottene;
 int gudKongenGeometrien;
 int hundeneBelonnes;
 
+// Ambience
+int ambienceLoop, ambienceDuration;
 
 // Cooldowns
 int warmUp = 5000; // normalt 60000
 boolean warmUpDone = false;
+
+// Morgenmødet cooldown
+boolean morgenmodetCooldown = true;
+int morgenmodetCooldownBegin;
+int morgenmodetCooldownDuration = 120000; // normalt 120000 millisekunder aka 2 minutter
+
+// Jagten cooldown
 boolean jagtenCooldown = true;
 int jagtenCooldownBegin;
-int jagtenCooldownDuration = 5000; // normalt 120000 millisekunder aka 2 minutter
-int ambienceLoop, ambienceDuration;
+int jagtenCooldownDuration = 120000; // normalt 120000 millisekunder aka 2 minutter
 
+// Slottene cooldown
+boolean slotteneCooldown = true;
+int slotteneCooldownBegin;
+int slotteneCooldownDuration = 120000; // normalt 120000 millisekunder aka 2 minutter
+
+// Ideernes Vandring cooldown
+boolean ideernesVandringCooldown = true;
+int ideernesVandringCooldownBegin;
+int ideernesVandringCooldownDuration = 120000; // normalt 120000 millisekunder aka 2 minutter
+
+// Hundene Belønnes cooldown
+boolean hundeneBelonnesCooldown = true;
+int hundeneBelonnesCooldownBegin;
+int hundeneBelonnesCooldownDuration = 120000; // normalt 120000 millisekunder aka 2 minutter
 
 // Intervaller
-int hvertTiendeSekund, hvertMinut;
+int hvertTiendeSekund, hvertMinut, hvertFemteMinut;
 
 
 //-------------------------------------------------------------------------------------
@@ -109,17 +131,17 @@ void setup()
       println("[" + Math.round(millis() / 1000) + "] Line 12 = softwareMixerOut #" + i);
       channelOut12 = i;
       channelOut12Set = true;
-    };
+    }
     if (mixerName.equals("Line 3/4 (M-Track Eight)") && channelOut34Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 34 = softwareMixerOut #" + i);
       channelOut34 = i;
       channelOut34Set = true;
-    };
+    }
     if (mixerName.equals("Line 5/6 (M-Track Eight)") && channelOut56Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 56 = softwareMixerOut #" + i);
       channelOut56 = i;
       channelOut56Set = true;
-    };
+    }
     if (mixerName.equals("Line 7/8 (M-Track Eight)") && channelOut78Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 78 = softwareMixerOut #" + i);
       channelOut78 = i;
@@ -184,77 +206,47 @@ void setup()
   println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder.");
 }
 
+
+
+
+
+
+
+
+
+
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void draw() {
-  background(0);
-  stroke(255);
+  text("FPS: " + nfs(frameRate, 2, 1), 439, 20); // framerate, mest bare Proof of Life
+  drawGui();
 
-  // On screen Arduino debugging
-  for (int i = 0; i <= 13; i++) {
-    if (arduino.digitalRead(i) == Arduino.HIGH) {
-      fill(243, 552, 117);
-    } else {
-      fill(84, 145, 158);
-    }
-    rect(420 - i * 30, 710, 20, 20);
-  }
-  noFill();
-  for (int i = 0; i <= 5; i++) {
-    ellipse(280 + i * 30, 750, arduino.analogRead(i) / 16, arduino.analogRead(i) / 16);
-  }
-
-  // draw the waveforms
-  // the values returned by left.get() and right.get() will be between -1 and 1,
-  // so we need to scale them up to see the waveform
-  // note that if the file is MONO, left.get() and right.get() will return the same value
-  noStroke();
-  fill(255, 128);
-  for (int i = 0; i < outArray[0].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, outArray[0].bufferSize(), 0, width);
-    float x2 = map(i + 1, 0, outArray[0].bufferSize(), 0, width);
-    line(x1, 50 + outArray[0].left.get(i) * 50, x2, 50 + outArray[0].left.get(i + 1) * 50);
-    line(x1, 150 + outArray[0].right.get(i) * 50, x2, 150 + outArray[0].right.get(i + 1) * 50);
-  }
-  rect(0, 0, outArray[0].left.level() * width, 100);
-  rect(0, 100, outArray[0].right.level() * width, 100);
-
-  for (int i = 0; i < outArray[1].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, outArray[1].bufferSize(), 0, width);
-    float x2 = map(i+1, 0, outArray[1].bufferSize(), 0, width);
-    line(x1, 250 + outArray[1].left.get(i) * 50, x2, 250 + outArray[1].left.get(i + 1) * 50);
-    line(x1, 350 + outArray[1].right.get(i) * 50, x2, 350 + outArray[1].right.get(i + 1) * 50);
-  }
-  rect(0, 200, outArray[1].left.level() * width, 100);
-  rect(0, 300, outArray[1].right.level() * width, 100);
-
-  for (int i = 0; i < outArray[2].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, outArray[2].bufferSize(), 0, width);
-    float x2 = map(i + 1, 0, outArray[2].bufferSize(), 0, width);
-    line(x1, 450 + outArray[2].left.get(i) * 50, x2, 450 + outArray[2].left.get(i + 1) * 50);
-    line(x1, 550 + outArray[2].right.get(i) * 50, x2, 550 + outArray[2].right.get(i + 1) * 50);
-  }
-  rect(0, 400, outArray[2].left.level() * width, 100);
-  rect(0, 500, outArray[2].right.level() * width, 100);
-
-  for (int i = 0; i < outArray[3].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, outArray[3].bufferSize(), 0, width);
-    float x2 = map(i + 1, 0, outArray[3].bufferSize(), 0, width);
-    line(x1, 650 + outArray[3].left.get(i) * 50, x2, 650 + outArray[3].left.get(i + 1) * 50);
-  }
-  rect(0, 600, outArray[3].left.level() * width, 100);
-
-  // On screen output nummerering
-  for (int i = 0; i < 7; i++) {
-    text("Output #" + (i + 1), 440, ((i + 1) * 100) - 60);
-  }
+  // Aktivér lydbilleder via PIR-sensorer.
   if (warmUp < millis()) {
     if (!warmUpDone) {
       println("[" + Math.round(millis() / 1000) + "] PIR-sensorerne er klar.");
       warmUpDone = true;
     }
-    //jagten trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //jagten startes når dPIN7 aktiveres
+
+    // Morgenmødet trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //Morgenmødet startes når dPIN7 aktiveres
+      /*    
+       morgenmodet12.trigger();
+       */
+
+      // Cooldown mekanisme
+      morgenmodetCooldown = false;
+      morgenmodetCooldownBegin = millis();
+      morgenmodet++;
+      println("[" + Math.round(millis() / 1000) + "] Morgenmødet startet " + morgenmodet + " gang(e), klar igen om " + Math.round(morgenmodetCooldownDuration / 1000) + " sekunder.");
+    }
+    if (morgenmodetCooldownBegin + morgenmodetCooldownDuration < millis() && !morgenmodetCooldown) {
+      morgenmodetCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Morgenmødet klar.");
+    }
+
+    // Jagten trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && morgenmodetCooldown) { // Jagten startes når dPIN7 aktiveres
       /*    
        jagten12.trigger();
        jagten34.trigger();
@@ -272,15 +264,65 @@ void draw() {
       jagtenCooldown = true;
       println("[" + Math.round(millis() / 1000) + "] Jagten klar.");
     }
+
+    // Slottene trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && slotteneCooldown) { //Slottene startes når dPIN7 aktiveres
+      /*    
+       slottene78.trigger();
+       */
+
+      // Cooldown mekanisme
+      slotteneCooldown = false;
+      slotteneCooldownBegin = millis();
+      slottene++;
+      println("[" + Math.round(millis() / 1000) + "] Slottene startet " + slottene + " gang(e), klar igen om " + Math.round(slotteneCooldownDuration / 1000) + " sekunder.");
+    }
+    if (slotteneCooldownBegin + slotteneCooldownDuration < millis() && !slotteneCooldown) {
+      slotteneCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Slottene klar.");
+    }
+
+    // Ideernes Vandring trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && ideernesVandringCooldown) { //ideernesVandring startes når dPIN7 aktiveres
+      /*    
+       ideernesVandring56.trigger();
+       */
+
+      // Cooldown mekanisme
+      ideernesVandringCooldown = false;
+      ideernesVandringCooldownBegin = millis();
+      ideernesVandring++;
+      println("[" + Math.round(millis() / 1000) + "] Ideernes Vandring startet " + ideernesVandring + " gang(e), klar igen om " + Math.round(ideernesVandringCooldownDuration / 1000) + " sekunder.");
+    }
+    if (ideernesVandringCooldownBegin + ideernesVandringCooldownDuration < millis() && !ideernesVandringCooldown) {
+      ideernesVandringCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Ideernes Vandring klar.");
+    }
+
+    // Hundene Belønnes trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN7 aktiveres
+      /*    
+       jagten12.trigger();
+       hundeneBelonnes34.trigger();
+       jagten56.trigger();
+       jagten78.trigger();
+       */
+
+      // Cooldown mekanisme
+      hundeneBelonnesCooldown = false;
+      hundeneBelonnesCooldownBegin = millis();
+      hundeneBelonnes++;
+      println("[" + Math.round(millis() / 1000) + "] Hundene Belønnes startet " + hundeneBelonnes + " gang(e), klar igen om " + Math.round(hundeneBelonnesCooldownDuration / 1000) + " sekunder.");
+    }
+    if (hundeneBelonnesCooldownBegin + hundeneBelonnesCooldownDuration < millis() && !hundeneBelonnesCooldown) {
+      hundeneBelonnesCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Hundene Belønnes klar.");
+    }
   }
 
-
-  text("FPS: " + nfs(frameRate, 2, 1), 439, 20); // framerate, mest bare Proof of Life
-
-
+  // Intervaller
   if (millis() > hvertTiendeSekund + 9999) {
     hvertTiendeSekund = millis();
-    //minutFugl.play();
   }
 
   if (millis() > hvertMinut + 59999) {
@@ -289,6 +331,10 @@ void draw() {
       ambience[i].trigger();
     }
     minutFugl.play();
+  }
+
+  if (millis() > hvertFemteMinut + 299999) {
+    hvertTiendeSekund = millis();
   }
 }
 
@@ -426,5 +472,72 @@ void keyPressed() {
   } else if (key == '8') {
   } else if (key == '9') {
   } else if (key == '0') {
+  }
+}
+
+
+
+
+void drawGui() {
+  background(0);
+  stroke(255);
+
+  // On screen Arduino debugging
+  for (int i = 0; i <= 13; i++) {
+    if (arduino.digitalRead(i) == Arduino.HIGH) {
+      fill(243, 552, 117);
+    } else {
+      fill(84, 145, 158);
+    }
+    rect(420 - i * 30, 710, 20, 20);
+  }
+  noFill();
+  for (int i = 0; i <= 5; i++) {
+    ellipse(280 + i * 30, 750, arduino.analogRead(i) / 16, arduino.analogRead(i) / 16);
+  }
+
+  // draw the waveforms
+  // the values returned by left.get() and right.get() will be between -1 and 1,
+  // so we need to scale them up to see the waveform
+  // note that if the file is MONO, left.get() and right.get() will return the same value
+  noStroke();
+  fill(255, 128);
+  for (int i = 0; i < outArray[0].bufferSize() - 1; i++) {
+    float x1 = map(i, 0, outArray[0].bufferSize(), 0, width);
+    float x2 = map(i + 1, 0, outArray[0].bufferSize(), 0, width);
+    line(x1, 50 + outArray[0].left.get(i) * 50, x2, 50 + outArray[0].left.get(i + 1) * 50);
+    line(x1, 150 + outArray[0].right.get(i) * 50, x2, 150 + outArray[0].right.get(i + 1) * 50);
+  }
+  rect(0, 0, outArray[0].left.level() * width, 100);
+  rect(0, 100, outArray[0].right.level() * width, 100);
+
+  for (int i = 0; i < outArray[1].bufferSize() - 1; i++) {
+    float x1 = map(i, 0, outArray[1].bufferSize(), 0, width);
+    float x2 = map(i+1, 0, outArray[1].bufferSize(), 0, width);
+    line(x1, 250 + outArray[1].left.get(i) * 50, x2, 250 + outArray[1].left.get(i + 1) * 50);
+    line(x1, 350 + outArray[1].right.get(i) * 50, x2, 350 + outArray[1].right.get(i + 1) * 50);
+  }
+  rect(0, 200, outArray[1].left.level() * width, 100);
+  rect(0, 300, outArray[1].right.level() * width, 100);
+
+  for (int i = 0; i < outArray[2].bufferSize() - 1; i++) {
+    float x1 = map(i, 0, outArray[2].bufferSize(), 0, width);
+    float x2 = map(i + 1, 0, outArray[2].bufferSize(), 0, width);
+    line(x1, 450 + outArray[2].left.get(i) * 50, x2, 450 + outArray[2].left.get(i + 1) * 50);
+    line(x1, 550 + outArray[2].right.get(i) * 50, x2, 550 + outArray[2].right.get(i + 1) * 50);
+  }
+  rect(0, 400, outArray[2].left.level() * width, 100);
+  rect(0, 500, outArray[2].right.level() * width, 100);
+
+  for (int i = 0; i < outArray[3].bufferSize() - 1; i++) {
+    float x1 = map(i, 0, outArray[3].bufferSize(), 0, width);
+    float x2 = map(i + 1, 0, outArray[3].bufferSize(), 0, width);
+    line(x1, 650 + outArray[3].left.get(i) * 50, x2, 650 + outArray[3].left.get(i + 1) * 50);
+  }
+  rect(0, 600, outArray[3].left.level() * width, 100);
+
+  // On screen output nummerering
+  for (int i = 0; i < 7; i++) {
+    text("Output #" + (i + 1), 440, ((i + 1) * 100) - 60);
   }
 }
