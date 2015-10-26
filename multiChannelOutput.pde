@@ -62,9 +62,9 @@ Sampler
   ambience12, ambience34, ambience56, ambience78, // alle
   morgenmodet12, // 1 -- done ???
   jagten12, jagten34, jagten56, jagten78, // alle -- IKKE done - mangler gallop-plask og gallop-træbro
-  slottene78, // 7 -- IKKE done - skal mastereres
-  ideernesVandring56, // 6 - done - hvis musikken spiller
   hundeneBelonnes34, // 4 - IKKE done - mangler lyden af hunde der æder
+  ideernesVandring56, // 6 - done - hvis musikken spiller
+  slottene78, // 7 -- IKKE done - skal mastereres
   ambience[] = new Sampler [4], 
   groove[] = new Sampler[7], grooveTemp, // bruges til at teste en helt anden type lyd
   fugleArray[][] = new Sampler[4][7];
@@ -74,7 +74,7 @@ Sampler
 int morgenmodet;
 int jagten;
 int slottene;
-int gudKongenGeometrien;
+int ideernesVandring;
 int hundeneBelonnes;
 
 // Ambience
@@ -230,9 +230,7 @@ void draw() {
 
     // Morgenmødet trigger- og cooldown-funktionalitet
     if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //Morgenmødet startes når dPIN7 aktiveres
-      /*    
-       morgenmodet12.trigger();
-       */
+      morgenmodet12.trigger();
 
       // Cooldown mekanisme
       morgenmodetCooldown = false;
@@ -246,7 +244,7 @@ void draw() {
     }
 
     // Jagten trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && morgenmodetCooldown) { // Jagten startes når dPIN7 aktiveres
+    if (arduino.digitalRead(8) == Arduino.HIGH && morgenmodetCooldown) { // Jagten startes når dPIN7 aktiveres
       /*    
        jagten12.trigger();
        jagten34.trigger();
@@ -265,28 +263,26 @@ void draw() {
       println("[" + Math.round(millis() / 1000) + "] Jagten klar.");
     }
 
-    // Slottene trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && slotteneCooldown) { //Slottene startes når dPIN7 aktiveres
+    // Hundene Belønnes trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(7) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN7 aktiveres
       /*    
-       slottene78.trigger();
+       hundeneBelonnes34.trigger();
        */
 
       // Cooldown mekanisme
-      slotteneCooldown = false;
-      slotteneCooldownBegin = millis();
-      slottene++;
-      println("[" + Math.round(millis() / 1000) + "] Slottene startet " + slottene + " gang(e), klar igen om " + Math.round(slotteneCooldownDuration / 1000) + " sekunder.");
+      hundeneBelonnesCooldown = false;
+      hundeneBelonnesCooldownBegin = millis();
+      hundeneBelonnes++;
+      println("[" + Math.round(millis() / 1000) + "] Hundene Belønnes startet " + hundeneBelonnes + " gang(e), klar igen om " + Math.round(hundeneBelonnesCooldownDuration / 1000) + " sekunder.");
     }
-    if (slotteneCooldownBegin + slotteneCooldownDuration < millis() && !slotteneCooldown) {
-      slotteneCooldown = true;
-      println("[" + Math.round(millis() / 1000) + "] Slottene klar.");
+    if (hundeneBelonnesCooldownBegin + hundeneBelonnesCooldownDuration < millis() && !hundeneBelonnesCooldown) {
+      hundeneBelonnesCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Hundene Belønnes klar.");
     }
 
     // Ideernes Vandring trigger- og cooldown-funktionalitet
     if (arduino.digitalRead(7) == Arduino.HIGH && ideernesVandringCooldown) { //ideernesVandring startes når dPIN7 aktiveres
-      /*    
-       ideernesVandring56.trigger();
-       */
+      ideernesVandring56.trigger();
 
       // Cooldown mekanisme
       ideernesVandringCooldown = false;
@@ -299,24 +295,19 @@ void draw() {
       println("[" + Math.round(millis() / 1000) + "] Ideernes Vandring klar.");
     }
 
-    // Hundene Belønnes trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN7 aktiveres
-      /*    
-       jagten12.trigger();
-       hundeneBelonnes34.trigger();
-       jagten56.trigger();
-       jagten78.trigger();
-       */
+    // Slottene trigger- og cooldown-funktionalitet
+    if (arduino.digitalRead(11) == Arduino.HIGH && slotteneCooldown) { //Slottene startes når dPIN7 aktiveres
+      //slottene78.trigger();
 
       // Cooldown mekanisme
-      hundeneBelonnesCooldown = false;
-      hundeneBelonnesCooldownBegin = millis();
-      hundeneBelonnes++;
-      println("[" + Math.round(millis() / 1000) + "] Hundene Belønnes startet " + hundeneBelonnes + " gang(e), klar igen om " + Math.round(hundeneBelonnesCooldownDuration / 1000) + " sekunder.");
+      slotteneCooldown = false;
+      slotteneCooldownBegin = millis();
+      slottene++;
+      println("[" + Math.round(millis() / 1000) + "] Slottene startet " + slottene + " gang(e), klar igen om " + Math.round(slotteneCooldownDuration / 1000) + " sekunder.");
     }
-    if (hundeneBelonnesCooldownBegin + hundeneBelonnesCooldownDuration < millis() && !hundeneBelonnesCooldown) {
-      hundeneBelonnesCooldown = true;
-      println("[" + Math.round(millis() / 1000) + "] Hundene Belønnes klar.");
+    if (slotteneCooldownBegin + slotteneCooldownDuration < millis() && !slotteneCooldown) {
+      slotteneCooldown = true;
+      println("[" + Math.round(millis() / 1000) + "] Slottene klar.");
     }
   }
 
