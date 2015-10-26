@@ -9,7 +9,7 @@ class Fugl {
     int fugl = _nummer;
     int kanal = _kanal;
 
-    fugleArray[fugl - 1][kanal - 1].trigger();
+    fugle[fugl - 1][kanal - 1].trigger();
   }
 
   // en fugl bliver afspillet på baggrund af randomiseret fugl og kanal
@@ -19,22 +19,22 @@ class Fugl {
     print("[" + Math.round(millis() / 1000) + "] ");
     println("Afspiller fugl #" + fugl + ", i kanal #" + kanal + ".");
 
-    fugleArray[fugl - 1][kanal - 1].trigger();
+    fugle[fugl - 1][kanal - 1].trigger();
   }
 
   // fuglene bliver gjort klar til brug
   void load() {
-    for (int fugle = 1; fugle <= 4; fugle++) {
+    for (int f = 1; f <= 4; f++) { // f som i fugl
       // filnavnet tildeles
       for (int kanaler = 1; kanaler <= 7; kanaler++) {
         int nu = millis();
         print("[" + Math.round(millis() / 1000) + "] ");
 
         if (kanaler % 2 == 0) {
-          fil = "fugl0" + Integer.toString(fugle) + "Right.mp3";
+          fil = "fugl0" + Integer.toString(f) + "Right.mp3";
           print(fil);
         } else {
-          fil = "fugl0" + Integer.toString(fugle) + "Left.wav";
+          fil = "fugl0" + Integer.toString(f) + "Left.wav";
           print(fil);
         }
 
@@ -52,19 +52,19 @@ class Fugl {
         fuglTemp = new Sampler(channelBuffer, sampleRate, 1);
         switch(kanalToStr) {
         case 12:
-          fuglTemp.patch(outArray[0]);
+          fuglTemp.patch(out[0]);
           break;
         case 34: 
-          fuglTemp.patch(outArray[1]);
+          fuglTemp.patch(out[1]);
           break;
         case 56: 
-          fuglTemp.patch(outArray[2]);
+          fuglTemp.patch(out[2]);
           break;
         case 78: 
-          fuglTemp.patch(outArray[3]);
+          fuglTemp.patch(out[3]);
           break;
         }
-        fugleArray[fugle - 1][kanaler - 1] = fuglTemp;
+        fugle[f - 1][kanaler - 1] = fuglTemp;
         println(" tog " + (millis() - nu) + " millisekunder at loade");
       }
     }
