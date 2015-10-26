@@ -81,7 +81,7 @@ int hundeneBelonnes;
 int ambienceLoop, ambienceDuration;
 
 // Cooldowns
-int warmUp = 5000; // normalt 60000
+int warmUp = 60000; // normalt 01 mike = 60000
 boolean warmUpDone = false;
 
 // Morgenmødet cooldown
@@ -118,7 +118,7 @@ int hvertTiendeSekund, hvertMinut, hvertFemteMinut;
 void setup()
 {
   // vindue sættes op
-  size(512, 800, P2D);
+  size(512, 500, P2D);
   //textAlign(LEFT, TOP);
 
   // lydkortets outputkanaler findes og aktiveres
@@ -199,6 +199,11 @@ void setup()
   // gem alle lyde i hukommelsen
   loadSounds();
 
+  // start ambience
+  for (int i = 0; i < ambience.length; i++) {
+    ambience[i].trigger();
+  }
+
   // startup tekst
   println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
   println("[" + Math.round(millis() / 1000) + "] build 15A282a");
@@ -229,14 +234,14 @@ void draw() {
 
   if (millis() > hvertMinut + 59999) {
     hvertMinut = millis();
-    for (int i = 0; i < ambience.length; i++) {
-      ambience[i].trigger();
-    }
     minutFugl.play();
   }
 
   if (millis() > hvertFemteMinut + 299999) {
     hvertTiendeSekund = millis();
+    for (int i = 0; i < ambience.length; i++) {
+      ambience[i].trigger();
+    }
   }
 }
 
@@ -306,7 +311,7 @@ void loadSounds() {
    jagten78.patch(out[3]);
    */
 
-  buffer = minim.loadFileIntoBuffer("7, Slottene.wav", channelBuffer);
+  buffer = minim.loadFileIntoBuffer("7. Slottene.wav", channelBuffer);
   slottene78 = new Sampler(channelBuffer, sampleRate, 1);
   slottene78.patch(out[3]);
 
@@ -365,8 +370,8 @@ void pirTrigger () {
     }
 
     // Morgenmødet trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && jagtenCooldown) { //Morgenmødet startes når dPIN7 aktiveres
-      morgenmodet12.trigger();
+    if (arduino.digitalRead(7) == Arduino.HIGH && morgenmodetCooldown) { //Morgenmødet startes når dPIN7 aktiveres
+      //morgenmodet12.trigger();
 
       // Cooldown mekanisme
       morgenmodetCooldown = false;
@@ -380,7 +385,7 @@ void pirTrigger () {
     }
 
     // Jagten trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(8) == Arduino.HIGH && morgenmodetCooldown) { // Jagten startes når dPIN7 aktiveres
+    if (arduino.digitalRead(8) == Arduino.HIGH && morgenmodetCooldown) { // Jagten startes når dPIN8 aktiveres
       /*    
        jagten12.trigger();
        jagten34.trigger();
@@ -400,7 +405,7 @@ void pirTrigger () {
     }
 
     // Hundene Belønnes trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN7 aktiveres
+    if (arduino.digitalRead(7) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN9 aktiveres
       /*    
        hundeneBelonnes34.trigger();
        */
@@ -417,7 +422,7 @@ void pirTrigger () {
     }
 
     // Ideernes Vandring trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && ideernesVandringCooldown) { //ideernesVandring startes når dPIN7 aktiveres
+    if (arduino.digitalRead(10) == Arduino.HIGH && ideernesVandringCooldown) { //ideernesVandring startes når dPIN10 aktiveres
       ideernesVandring56.trigger();
 
       // Cooldown mekanisme
@@ -432,7 +437,7 @@ void pirTrigger () {
     }
 
     // Slottene trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(11) == Arduino.HIGH && slotteneCooldown) { //Slottene startes når dPIN7 aktiveres
+    if (arduino.digitalRead(11) == Arduino.HIGH && slotteneCooldown) { //Slottene startes når dPIN11 aktiveres
       slottene78.trigger();
 
       // Cooldown mekanisme
@@ -492,61 +497,26 @@ void drawGui() {
   stroke(255);
 
   // On screen Arduino debugging
-  for (int i = 0; i <= 13; i++) {
+  for (int i = 6; i <= 10; i++) {
     if (arduino.digitalRead(i) == Arduino.HIGH) {
       fill(243, 552, 117);
     } else {
       fill(84, 145, 158);
     }
-    rect(420 - i * 30, 710, 20, 20);
-  }
-  noFill();
-  for (int i = 0; i <= 5; i++) {
-    ellipse(280 + i * 30, 750, arduino.analogRead(i) / 16, arduino.analogRead(i) / 16);
+    rect(420 - i * 30, 360, 30, 30);
   }
 
-  // draw the waveforms
-  // the values returned by left.get() and right.get() will be between -1 and 1,
-  // so we need to scale them up to see the waveform
-  // note that if the file is MONO, left.get() and right.get() will return the same value
-  noStroke();
   fill(255, 128);
-  for (int i = 0; i < out[0].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, out[0].bufferSize(), 0, width);
-    float x2 = map(i + 1, 0, out[0].bufferSize(), 0, width);
-    line(x1, 50 + out[0].left.get(i) * 50, x2, 50 + out[0].left.get(i + 1) * 50);
-    line(x1, 150 + out[0].right.get(i) * 50, x2, 150 + out[0].right.get(i + 1) * 50);
-  }
-  rect(0, 0, out[0].left.level() * width, 100);
-  rect(0, 100, out[0].right.level() * width, 100);
-
-  for (int i = 0; i < out[1].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, out[1].bufferSize(), 0, width);
-    float x2 = map(i+1, 0, out[1].bufferSize(), 0, width);
-    line(x1, 250 + out[1].left.get(i) * 50, x2, 250 + out[1].left.get(i + 1) * 50);
-    line(x1, 350 + out[1].right.get(i) * 50, x2, 350 + out[1].right.get(i + 1) * 50);
-  }
-  rect(0, 200, out[1].left.level() * width, 100);
-  rect(0, 300, out[1].right.level() * width, 100);
-
-  for (int i = 0; i < out[2].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, out[2].bufferSize(), 0, width);
-    float x2 = map(i + 1, 0, out[2].bufferSize(), 0, width);
-    line(x1, 450 + out[2].left.get(i) * 50, x2, 450 + out[2].left.get(i + 1) * 50);
-    line(x1, 550 + out[2].right.get(i) * 50, x2, 550 + out[2].right.get(i + 1) * 50);
-  }
-  rect(0, 400, out[2].left.level() * width, 100);
-  rect(0, 500, out[2].right.level() * width, 100);
-
-  for (int i = 0; i < out[3].bufferSize() - 1; i++) {
-    float x1 = map(i, 0, out[3].bufferSize(), 0, width);
-    float x2 = map(i + 1, 0, out[3].bufferSize(), 0, width);
-    line(x1, 650 + out[3].left.get(i) * 50, x2, 650 + out[3].left.get(i + 1) * 50);
-  }
-  rect(0, 600, out[3].left.level() * width, 100);
+  rect(0, 0, out[0].left.level() * width, 50);
+  rect(0, 50, out[0].right.level() * width, 50);
+  rect(0, 100, out[1].left.level() * width, 50);
+  rect(0, 150, out[1].right.level() * width, 50);
+  rect(0, 200, out[2].left.level() * width, 50);
+  rect(0, 250, out[2].right.level() * width, 50);
+  rect(0, 300, out[3].left.level() * width, 50);
 
   // On screen output nummerering
   for (int i = 0; i < 7; i++) {
-    text("Output #" + (i + 1), 440, ((i + 1) * 100) - 60);
+    text("Output #" + (i + 1), 440, ((i + 1) * 50) - 60);
   }
 }

@@ -29,133 +29,133 @@ class Debug {
 
   // -||- liste over hvilke former for kontrol minim har over output.
   void control() {
-    if (outArray[0].hasControl(Controller.PAN)) {
-      print("DEBUG: pan control        : outArray[0] ja  |");
+    if (out[0].hasControl(Controller.PAN)) {
+      print("DEBUG: pan control        : out[0] ja  |");
     } else {
-      print("DEBUG: pan control        : outArray[0] nej |");
+      print("DEBUG: pan control        : out[0] nej |");
     }
-    if (outArray[1].hasControl(Controller.PAN)) {
-      print(" outArray[1] ja  |");
+    if (out[1].hasControl(Controller.PAN)) {
+      print(" out[1] ja  |");
     } else {
-      print(" outArray[1] nej |");
+      print(" out[1] nej |");
     }
-    if (outArray[2].hasControl(Controller.PAN)) {
-      print(" outArray[2] ja  |");
+    if (out[2].hasControl(Controller.PAN)) {
+      print(" out[2] ja  |");
     } else {
-      print(" outArray[2] nej |");
+      print(" out[2] nej |");
     }
-    if (outArray[3].hasControl(Controller.PAN)) {
-      println(" outArray[3] ja");
+    if (out[3].hasControl(Controller.PAN)) {
+      println(" out[3] ja");
     } else {
-      println(" outArray[3] nej");
-    }
-
-    if (outArray[0].hasControl(Controller.VOLUME)) {
-      print("DEBUG: volume control     : outArray[0] ja  |");
-    } else {
-      print("DEBUG: volume control     : outArray[0] nej |");
-    }
-    if (outArray[1].hasControl(Controller.VOLUME)) {
-      print(" outArray[1] ja  |");
-    } else {
-      print(" outArray[1] nej |");
-    }
-    if (outArray[2].hasControl(Controller.VOLUME)) {
-      print(" outArray[2] ja  |");
-    } else {
-      print(" outArray[2] nej |");
-    }
-    if (outArray[3].hasControl(Controller.VOLUME)) {
-      println(" outArray[3] ja");
-    } else {
-      println(" outArray[3] nej");
+      println(" out[3] nej");
     }
 
-    if (outArray[0].hasControl(Controller.SAMPLE_RATE)) {
-      print("DEBUG: sample rate control: outArray[0] ja  |");
+    if (out[0].hasControl(Controller.VOLUME)) {
+      print("DEBUG: volume control     : out[0] ja  |");
     } else {
-      print("DEBUG: sample rate control: outArray[0] nej |");
+      print("DEBUG: volume control     : out[0] nej |");
     }
-    if (outArray[1].hasControl(Controller.SAMPLE_RATE)) {
-      print(" outArray[1] ja  |");
+    if (out[1].hasControl(Controller.VOLUME)) {
+      print(" out[1] ja  |");
     } else {
-      print(" outArray[1] nej |");
+      print(" out[1] nej |");
     }
-    if (outArray[2].hasControl(Controller.SAMPLE_RATE)) {
-      print(" outArray[2] ja  |");
+    if (out[2].hasControl(Controller.VOLUME)) {
+      print(" out[2] ja  |");
     } else {
-      print(" outArray[2] nej |");
+      print(" out[2] nej |");
     }
-    if (outArray[3].hasControl(Controller.SAMPLE_RATE)) {
-      println(" outArray[3] ja");
+    if (out[3].hasControl(Controller.VOLUME)) {
+      println(" out[3] ja");
     } else {
-      println(" outArray[3] nej");
-    }
-
-    if (outArray[0].hasControl(Controller.BALANCE)) {
-      print("DEBUG: balance control    : outArray[0] ja  |");
-    } else {
-      print("DEBUG: balance control    : outArray[0] nej |");
-    }
-    if (outArray[1].hasControl(Controller.BALANCE)) {
-      print(" outArray[1] ja  |");
-    } else {
-      print(" outArray[1] nej |");
-    }
-    if (outArray[2].hasControl(Controller.BALANCE)) {
-      print(" outArray[2] ja  |");
-    } else {
-      println(" outArray[2] nej |");
-    }
-    if (outArray[3].hasControl(Controller.BALANCE)) {
-      println(" outArray[3] ja");
-    } else {
-      println(" outArray[3] nej");
+      println(" out[3] nej");
     }
 
-    if (outArray[0].hasControl(Controller.MUTE)) {
-      print("DEBUG: mute control       : outArray[0] ja  |");
+    if (out[0].hasControl(Controller.SAMPLE_RATE)) {
+      print("DEBUG: sample rate control: out[0] ja  |");
     } else {
-      print("DEBUG: mute control       : outArray[0] nej |");
+      print("DEBUG: sample rate control: out[0] nej |");
     }
-    if (outArray[1].hasControl(Controller.MUTE)) {
-      print(" outArray[1] ja  |");
+    if (out[1].hasControl(Controller.SAMPLE_RATE)) {
+      print(" out[1] ja  |");
     } else {
-      print(" outArray[1] nej |");
+      print(" out[1] nej |");
     }
-    if (outArray[2].hasControl(Controller.MUTE)) {
-      print(" outArray[2] ja  |");
+    if (out[2].hasControl(Controller.SAMPLE_RATE)) {
+      print(" out[2] ja  |");
     } else {
-      print(" outArray[2] nej |");
+      print(" out[2] nej |");
     }
-    if (outArray[3].hasControl(Controller.MUTE)) {
-      println(" outArray[3] ja");
+    if (out[3].hasControl(Controller.SAMPLE_RATE)) {
+      println(" out[3] ja");
     } else {
-      println(" outArray[3] nej");
-    }
-
-    if (outArray[0].hasControl(Controller.GAIN)) {
-      print("DEBUG: gain control       : outArray[0] ja  |");
-    } else {
-      print("DEBUG: gain control       : outArray[0] nej |");
+      println(" out[3] nej");
     }
 
-    if (outArray[1].hasControl(Controller.GAIN)) {
-      print(" outArray[1] ja  |");
+    if (out[0].hasControl(Controller.BALANCE)) {
+      print("DEBUG: balance control    : out[0] ja  |");
     } else {
-      print(" outArray[1] nej |");
+      print("DEBUG: balance control    : out[0] nej |");
+    }
+    if (out[1].hasControl(Controller.BALANCE)) {
+      print(" out[1] ja  |");
+    } else {
+      print(" out[1] nej |");
+    }
+    if (out[2].hasControl(Controller.BALANCE)) {
+      print(" out[2] ja  |");
+    } else {
+      println(" out[2] nej |");
+    }
+    if (out[3].hasControl(Controller.BALANCE)) {
+      println(" out[3] ja");
+    } else {
+      println(" out[3] nej");
     }
 
-    if (outArray[2].hasControl(Controller.GAIN)) {
-      print(" outArray[2] ja  |");
+    if (out[0].hasControl(Controller.MUTE)) {
+      print("DEBUG: mute control       : out[0] ja  |");
     } else {
-      print(" outArray[2] nej |");
+      print("DEBUG: mute control       : out[0] nej |");
+    }
+    if (out[1].hasControl(Controller.MUTE)) {
+      print(" out[1] ja  |");
+    } else {
+      print(" out[1] nej |");
+    }
+    if (out[2].hasControl(Controller.MUTE)) {
+      print(" out[2] ja  |");
+    } else {
+      print(" out[2] nej |");
+    }
+    if (out[3].hasControl(Controller.MUTE)) {
+      println(" out[3] ja");
+    } else {
+      println(" out[3] nej");
     }
 
-    if (outArray[3].hasControl(Controller.GAIN)) {
-      println(" outArray[3] ja");
+    if (out[0].hasControl(Controller.GAIN)) {
+      print("DEBUG: gain control       : out[0] ja  |");
     } else {
-      println(" outArray[3] nej");
+      print("DEBUG: gain control       : out[0] nej |");
+    }
+
+    if (out[1].hasControl(Controller.GAIN)) {
+      print(" out[1] ja  |");
+    } else {
+      print(" out[1] nej |");
+    }
+
+    if (out[2].hasControl(Controller.GAIN)) {
+      print(" out[2] ja  |");
+    } else {
+      print(" out[2] nej |");
+    }
+
+    if (out[3].hasControl(Controller.GAIN)) {
+      println(" out[3] ja");
+    } else {
+      println(" out[3] nej");
     }
   }
 
