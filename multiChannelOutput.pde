@@ -118,7 +118,7 @@ int hvertTiendeSekund, hvertMinut, hvertFemteMinut;
 void setup()
 {
   // vindue sættes op
-  size(512, 500, P2D);
+  size(256, 200, P2D);
   //textAlign(LEFT, TOP);
 
   // lydkortets outputkanaler findes og aktiveres
@@ -226,7 +226,6 @@ void setup()
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void draw() {
-  text("FPS: " + nfs(frameRate, 2, 1), 439, 20); // framerate, mest bare Proof of Life
   drawGui();
   pirTrigger();
 
@@ -270,6 +269,56 @@ void loadSounds() {
   ideernesVandring56.patch(out[2]);
   println(" tog " + (millis() - nu) + " millisekunder at loade.");
 
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Morgenmødet til udgang 1" );
+  buffer = minim.loadFileIntoBuffer("1. Morgenmodet.wav", channelBuffer);
+  morgenmodet12 = new Sampler(channelBuffer, sampleRate, 1);
+  morgenmodet12.patch(out[0]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
+
+  /*
+  buffer = minim.loadFileIntoBuffer("Sanktus.wav", channelBuffer);
+   ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
+   ideernesVandring56.patch(out[2]);
+   */
+
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Jagten til udgang 12" );
+  buffer = minim.loadFileIntoBuffer("2. Jagten12.wav", channelBuffer);
+  jagten12 = new Sampler(channelBuffer, sampleRate, 1);
+  jagten12.patch(out[0]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Jagten til udgang 34" );
+  buffer = minim.loadFileIntoBuffer("2. Jagten34.wav", channelBuffer);
+  jagten34 = new Sampler(channelBuffer, sampleRate, 1);
+  jagten34.patch(out[1]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Jagten til udgang 56" );
+  buffer = minim.loadFileIntoBuffer("2. Jagten56.wav", channelBuffer);
+  jagten56 = new Sampler(channelBuffer, sampleRate, 1);
+  jagten56.patch(out[2]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Jagten til udgang 78" );
+  buffer = minim.loadFileIntoBuffer("2. Jagten78.wav", channelBuffer);
+  jagten78 = new Sampler(channelBuffer, sampleRate, 1);
+  jagten78.patch(out[3]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Slottene til udgang 7" );
+  buffer = minim.loadFileIntoBuffer("7. Slottene.wav", channelBuffer);
+  slottene78 = new Sampler(channelBuffer, sampleRate, 1);
+  slottene78.patch(out[3]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
+  // load ambience
   for (int i = 0; i < ambience.length; i++) {
     nu = millis();
 
@@ -289,44 +338,6 @@ void loadSounds() {
     }
     println(" tog " + (millis() - nu) + " millisekunder at loade.");
   }
-
-  nu = millis();
-  print("[" + Math.round(millis() / 1000) + "] Morgenmødet til udgang 1" );
-  buffer = minim.loadFileIntoBuffer("1. Morgenmodet.wav", channelBuffer);
-  morgenmodet12 = new Sampler(channelBuffer, sampleRate, 1);
-  morgenmodet12.patch(out[0]);
-  println(" tog " + (millis() - nu) + " millisekunder at loade.");
-
-
-  /*
-  buffer = minim.loadFileIntoBuffer("Sanktus.wav", channelBuffer);
-   ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
-   ideernesVandring56.patch(out[2]);
-   */
-
-  /*
-  buffer = minim.loadFileIntoBuffer("jagten12.mp3", channelBuffer);
-   jagten12 = new Sampler(channelBuffer, sampleRate, 1);
-   jagten12.patch(out[0]);
-   
-   buffer = minim.loadFileIntoBuffer("jagten34.mp3", channelBuffer);
-   jagten34 = new Sampler(channelBuffer, sampleRate, 1);
-   jagten34.patch(out[1]);
-   
-   buffer = minim.loadFileIntoBuffer("jagten56.mp3", channelBuffer);
-   jagten56 = new Sampler(channelBuffer, sampleRate, 1);
-   jagten56.patch(out[2]);
-   
-   buffer = minim.loadFileIntoBuffer("jagten78.mp3", channelBuffer);
-   jagten78 = new Sampler(channelBuffer, sampleRate, 1);
-   jagten78.patch(out[3]);
-   */
-  nu = millis();
-  print("[" + Math.round(millis() / 1000) + "] Slottene til udgang 7" );
-  buffer = minim.loadFileIntoBuffer("7. Slottene.wav", channelBuffer);
-  slottene78 = new Sampler(channelBuffer, sampleRate, 1);
-  slottene78.patch(out[3]);
-  println(" tog " + (millis() - nu) + " millisekunder at loade.");
 
   // lyde til test af kanaler
   for (int i = 0; i < groove.length; i++) {
@@ -399,12 +410,12 @@ void pirTrigger () {
 
     // Jagten trigger- og cooldown-funktionalitet
     if (arduino.digitalRead(8) == Arduino.HIGH && jagtenCooldown) { // Jagten startes når dPIN8 aktiveres
-      /*    
-       jagten12.trigger();
-       jagten34.trigger();
-       jagten56.trigger();
-       jagten78.trigger();
-       */
+
+      jagten12.trigger();
+      jagten34.trigger();
+      jagten56.trigger();
+      jagten78.trigger();
+
 
       // Cooldown mekanisme
       jagtenCooldown = false;
@@ -509,28 +520,28 @@ void drawGui() {
   background(0);
   stroke(255);
 
+  /*
   // On screen Arduino debugging
-  for (int i = 7; i <= 11; i++) {
-    if (arduino.digitalRead(i) == Arduino.HIGH) {
-      fill(243, 552, 117);
-    } else {
-      fill(84, 145, 158);
-    }
-    rect(420 - i * 30, 360, 30, 30);
-    text((char)i - 6, 420 - i * 30, 360);
-  }
+   for (int i = 7; i <= 11; i++) {
+   if (arduino.digitalRead(i) == Arduino.HIGH) {
+   fill(243, 552, 117);
+   } else {
+   fill(84, 145, 158);
+   }
+   rect(420 - i * 30, 360, 30, 30);
+   text((char)i - 6, 420 - i * 30, 360);
+   }
+   */
+
+  text("FPS: " + nfs(frameRate, 2, 1), 180, 18); // framerate, mest bare Proof of Life
+
 
   fill(255, 128);
-  rect(0, 0, out[0].left.level() * width, 50);
-  rect(0, 50, out[0].right.level() * width, 50);
-  rect(0, 100, out[1].left.level() * width, 50);
-  rect(0, 150, out[1].right.level() * width, 50);
-  rect(0, 200, out[2].left.level() * width, 50);
-  rect(0, 250, out[2].right.level() * width, 50);
-  rect(0, 300, out[3].left.level() * width, 50);
-
-  // On screen output nummerering
-  for (int i = 0; i < 7; i++) {
-    text("Output #" + (i + 1), 440, ((i + 1) * 50) - 60);
-  }
+  rect(0, 2, out[0].left.level() * width, 21);
+  rect(0, 27, out[0].right.level() * width, 21);
+  rect(0, 52, out[1].left.level() * width, 21);
+  rect(0, 77, out[1].right.level() * width, 21);
+  rect(0, 102, out[2].left.level() * width, 21);
+  rect(0, 127, out[2].right.level() * width, 21);
+  rect(0, 152, out[3].left.level() * width, 21);
 }
