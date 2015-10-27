@@ -118,7 +118,7 @@ int hvertTiendeSekund, hvertMinut, hvertFemteMinut;
 void setup()
 {
   // vindue sættes op
-  size(256, 200, P2D);
+  size(256, 176, P2D);
   //textAlign(LEFT, TOP);
 
   // lydkortets outputkanaler findes og aktiveres
