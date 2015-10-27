@@ -60,11 +60,11 @@ AudioOutput        out[] = new AudioOutput[4];
 // Samplere til lyd
 Sampler
   ambience12, ambience34, ambience56, ambience78, // alle
-  morgenmodet12, // 1 -- done ???
-  jagten12, jagten34, jagten56, jagten78, // alle -- IKKE done - mangler gallop-plask og gallop-træbro
-  hundeneBelonnes34, // 4 - IKKE done - mangler lyden af hunde der æder
-  ideernesVandring56, // 6 - done - hvis musikken spiller
-  slottene78, // 7 -- IKKE done - skal mastereres
+  morgenmodet12, // 1
+  jagten12, jagten34, jagten56, jagten78, // alle
+  hundeneBelonnes34, // 4
+  ideernesVandring56, // 6
+  slottene78, // 7
   ambience[] = new Sampler [4], 
   groove[] = new Sampler[7], grooveTemp, // bruges til at teste en helt anden type lyd
   fugle[][] = new Sampler[4][7];
@@ -199,16 +199,19 @@ void setup()
   // gem alle lyde i hukommelsen
   loadSounds();
 
-  // start ambience
-  for (int i = 0; i < ambience.length; i++) {
-    ambience[i].trigger();
-  }
 
   // startup tekst
   println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
   println("[" + Math.round(millis() / 1000) + "] build 15A282a");
   println("[" + Math.round(millis() / 1000) + "] Boottid " + millis() + " millisekunder.");
   println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder.");
+
+
+  // starter ambience
+  for (int i = 0; i < ambience.length; i++) {
+    ambience[i].trigger();
+  }
+  println("[" + Math.round(millis() / 1000) + "] Ambience startet.");
 }
 
 
@@ -238,10 +241,11 @@ void draw() {
   }
 
   if (millis() > hvertFemteMinut + 299999) {
-    hvertTiendeSekund = millis();
+    hvertFemteMinut = millis();
     for (int i = 0; i < ambience.length; i++) {
       ambience[i].trigger();
     }
+    println("[" + Math.round(millis() / 1000) + "] Ambience starter forfra.");
   }
 }
 
@@ -257,18 +261,23 @@ void draw() {
 //-------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------
 void loadSounds() {
+  int nu;
+
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Ideernes Vandring til udgang 5" );
   buffer = minim.loadFileIntoBuffer("04 No. 1 Menuetto - trio.wav", channelBuffer);
   ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
   ideernesVandring56.patch(out[2]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
 
   for (int i = 0; i < ambience.length; i++) {
-    int nu = millis();
+    nu = millis();
 
     buffer = minim.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer);
     ambience[i] = new Sampler(channelBuffer, sampleRate, 1);
     ambience[i].patch(out[i]);
 
-    print("[" + Math.round(millis() / 1000) + "] ambience til udgang " );    
+    print("[" + Math.round(millis() / 1000) + "] Ambience til udgang " );    
     if (i == 0) {
       print("12");
     } else if (i == 1) {
@@ -278,14 +287,16 @@ void loadSounds() {
     } else if (i == 3) {
       print("78");
     }
-    println(" tog " + (millis() - nu) + " millisekunder at loade");
+    println(" tog " + (millis() - nu) + " millisekunder at loade.");
   }
 
-  /*
-  buffer = minim.loadFileIntoBuffer("morgenmodet12.mp3", channelBuffer);
-   morgenmodet12 = new Sampler(channelBuffer, sampleRate, 1);
-   morgenmodet12.patch(out[0]);
-   */
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Morgenmødet til udgang 1" );
+  buffer = minim.loadFileIntoBuffer("1. Morgenmodet.wav", channelBuffer);
+  morgenmodet12 = new Sampler(channelBuffer, sampleRate, 1);
+  morgenmodet12.patch(out[0]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
 
   /*
   buffer = minim.loadFileIntoBuffer("Sanktus.wav", channelBuffer);
@@ -310,14 +321,16 @@ void loadSounds() {
    jagten78 = new Sampler(channelBuffer, sampleRate, 1);
    jagten78.patch(out[3]);
    */
-
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Slottene til udgang 7" );
   buffer = minim.loadFileIntoBuffer("7. Slottene.wav", channelBuffer);
   slottene78 = new Sampler(channelBuffer, sampleRate, 1);
   slottene78.patch(out[3]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
 
   // lyde til test af kanaler
   for (int i = 0; i < groove.length; i++) {
-    int nu = millis();
+    nu = millis();
     print("[" + Math.round(millis() / 1000) + "] ");
     if (i % 2 == 0) {
       buffer = minim.loadFileIntoBuffer("grooveLeft.wav", channelBuffer);
@@ -371,7 +384,7 @@ void pirTrigger () {
 
     // Morgenmødet trigger- og cooldown-funktionalitet
     if (arduino.digitalRead(7) == Arduino.HIGH && morgenmodetCooldown) { //Morgenmødet startes når dPIN7 aktiveres
-      //morgenmodet12.trigger();
+      morgenmodet12.trigger();
 
       // Cooldown mekanisme
       morgenmodetCooldown = false;
@@ -385,7 +398,7 @@ void pirTrigger () {
     }
 
     // Jagten trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(8) == Arduino.HIGH && morgenmodetCooldown) { // Jagten startes når dPIN8 aktiveres
+    if (arduino.digitalRead(8) == Arduino.HIGH && jagtenCooldown) { // Jagten startes når dPIN8 aktiveres
       /*    
        jagten12.trigger();
        jagten34.trigger();
@@ -497,13 +510,14 @@ void drawGui() {
   stroke(255);
 
   // On screen Arduino debugging
-  for (int i = 6; i <= 10; i++) {
+  for (int i = 7; i <= 11; i++) {
     if (arduino.digitalRead(i) == Arduino.HIGH) {
       fill(243, 552, 117);
     } else {
       fill(84, 145, 158);
     }
     rect(420 - i * 30, 360, 30, 30);
+    text((char)i - 6, 420 - i * 30, 360);
   }
 
   fill(255, 128);
