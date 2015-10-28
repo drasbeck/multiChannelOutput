@@ -127,22 +127,22 @@ void setup()
   for (int i = 0; i < mixerInfo.length; i++) {
     //println("[" + Math.round(millis() / 1000) + "] " + mixerInfo[i].getName());
     String mixerName = mixerInfo[i].getName();
-    if (mixerName.equals("Line 1/2 (M-Track Eight)") && channelOut12Set == false) {
+    if (mixerName.equals("Line 1/2 (M-Audio M-Track Eight)") && channelOut12Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 12 = softwareMixerOut #" + i);
       channelOut12 = i;
       channelOut12Set = true;
     }
-    if (mixerName.equals("Line 3/4 (M-Track Eight)") && channelOut34Set == false) {
+    if (mixerName.equals("Line 3/4 (M-Audio M-Track Eight)") && channelOut34Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 34 = softwareMixerOut #" + i);
       channelOut34 = i;
       channelOut34Set = true;
     }
-    if (mixerName.equals("Line 5/6 (M-Track Eight)") && channelOut56Set == false) {
+    if (mixerName.equals("Line 5/6 (M-Audio M-Track Eight)") && channelOut56Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 56 = softwareMixerOut #" + i);
       channelOut56 = i;
       channelOut56Set = true;
     }
-    if (mixerName.equals("Line 7/8 (M-Track Eight)") && channelOut78Set == false) {
+    if (mixerName.equals("Line 7/8 (M-Audio M-Track Eight)") && channelOut78Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 78 = softwareMixerOut #" + i);
       channelOut78 = i;
       channelOut78Set = true;
@@ -264,7 +264,7 @@ void loadSounds() {
 
   nu = millis();
   print("[" + Math.round(millis() / 1000) + "] Ideernes Vandring til udgang 5" );
-  buffer = minim.loadFileIntoBuffer("04 No. 1 Menuetto - trio.wav", channelBuffer);
+  buffer = minim.loadFileIntoBuffer("6. Ideerne.wav", channelBuffer);
   ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
   ideernesVandring56.patch(out[2]);
   println(" tog " + (millis() - nu) + " millisekunder at loade.");
@@ -277,11 +277,13 @@ void loadSounds() {
   println(" tog " + (millis() - nu) + " millisekunder at loade.");
 
 
-  /*
-  buffer = minim.loadFileIntoBuffer("Sanktus.wav", channelBuffer);
-   ideernesVandring56 = new Sampler(channelBuffer, sampleRate, 1);
-   ideernesVandring56.patch(out[2]);
-   */
+  nu = millis();
+  print("[" + Math.round(millis() / 1000) + "] Hundene Belønnes til udgang 4" );
+  buffer = minim.loadFileIntoBuffer("4. HundeneBelonnes.wav", channelBuffer);
+  hundeneBelonnes34 = new Sampler(channelBuffer, sampleRate, 1);
+  hundeneBelonnes34.patch(out[1]);
+  println(" tog " + (millis() - nu) + " millisekunder at loade.");
+
 
   nu = millis();
   print("[" + Math.round(millis() / 1000) + "] Jagten til udgang 12" );
@@ -322,7 +324,7 @@ void loadSounds() {
   for (int i = 0; i < ambience.length; i++) {
     nu = millis();
 
-    buffer = minim.loadFileIntoBuffer("0. Ambience12.wav", channelBuffer);
+    buffer = minim.loadFileIntoBuffer("0. Ambience.wav", channelBuffer);
     ambience[i] = new Sampler(channelBuffer, sampleRate, 1);
     ambience[i].patch(out[i]);
 
@@ -429,10 +431,8 @@ void pirTrigger () {
     }
 
     // Hundene Belønnes trigger- og cooldown-funktionalitet
-    if (arduino.digitalRead(7) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN9 aktiveres
-      /*    
-       hundeneBelonnes34.trigger();
-       */
+    if (arduino.digitalRead(9) == Arduino.HIGH && hundeneBelonnesCooldown) { //hundeneBelonnes startes når dPIN9 aktiveres
+      hundeneBelonnes34.trigger();
 
       // Cooldown mekanisme
       hundeneBelonnesCooldown = false;
@@ -520,20 +520,21 @@ void drawGui() {
   background(0);
   stroke(255);
 
-  /*
-  // On screen Arduino debugging
-   for (int i = 7; i <= 11; i++) {
-   if (arduino.digitalRead(i) == Arduino.HIGH) {
-   fill(243, 552, 117);
-   } else {
-   fill(84, 145, 158);
-   }
-   rect(420 - i * 30, 360, 30, 30);
-   text((char)i - 6, 420 - i * 30, 360);
-   }
-   */
 
-  text("FPS: " + nfs(frameRate, 2, 1), 180, 18); // framerate, mest bare Proof of Life
+  // On screen Arduino debugging
+  for (int i = 7; i <= 11; i++) {
+    if (arduino.digitalRead(i) == Arduino.HIGH) {
+      fill(243, 552, 117);
+    } else {
+      fill(84, 145, 158);
+    }
+    rect(420 - i * 30, 120, 20, 20);
+    fill(50);
+    text((char)i - 6, 427 - i * 30, 135);
+  }
+
+  fill(255);
+  text("FPS: " + nfs(frameRate, 2, 1), 183, 18); // framerate, mest bare Proof of Life
 
 
   fill(255, 128);
