@@ -7,7 +7,6 @@
 // Noter:
 // sample rate skal være 44100
 // wav-filer skal være 16 bit, signed
-// tilsyneladende forsvinder .looping i ny og næ?
 //-------------------------------------------------------------------------------------
 // Skema over hvilke kanaler der læser hvilken side af en lydfil
 // 
@@ -20,10 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 // TODO
-// Få styr på lydniveau hos i de forskellige kanaler.
-//   - gøres med setGain på out[0] eksempelvis -- når vi har højttalerne.
-// Få styr på sound scapes.
-// Nice to have: Lav fadeIn, fadeOut, fadeCross.
+//
 //-------------------------------------------------------------------------------------
 
 import ddf.minim.*;
@@ -124,25 +120,26 @@ void setup()
   // lydkortets outputkanaler findes og aktiveres
   mixerInfo = AudioSystem.getMixerInfo();
 
+  // sørg for at den string der søges efter stemmer overens med navnene fra debugger.output();
   for (int i = 0; i < mixerInfo.length; i++) {
     //println("[" + Math.round(millis() / 1000) + "] " + mixerInfo[i].getName());
     String mixerName = mixerInfo[i].getName();
-    if (mixerName.equals("Line 1/2 (M-Audio M-Track Eight)") && channelOut12Set == false) {
+    if (mixerName.equals("Line 1/2 (2- M-Audio M-Track Eight)") && channelOut12Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 12 = softwareMixerOut #" + i);
       channelOut12 = i;
       channelOut12Set = true;
     }
-    if (mixerName.equals("Line 3/4 (M-Audio M-Track Eight)") && channelOut34Set == false) {
+    if (mixerName.equals("Line 3/4 (2- M-Audio M-Track Eight)") && channelOut34Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 34 = softwareMixerOut #" + i);
       channelOut34 = i;
       channelOut34Set = true;
     }
-    if (mixerName.equals("Line 5/6 (M-Audio M-Track Eight)") && channelOut56Set == false) {
+    if (mixerName.equals("Line 5/6 (2- M-Audio M-Track Eight)") && channelOut56Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 56 = softwareMixerOut #" + i);
       channelOut56 = i;
       channelOut56Set = true;
     }
-    if (mixerName.equals("Line 7/8 (M-Audio M-Track Eight)") && channelOut78Set == false) {
+    if (mixerName.equals("Line 7/8 (2- M-Audio M-Track Eight)") && channelOut78Set == false) {
       println("[" + Math.round(millis() / 1000) + "] Line 78 = softwareMixerOut #" + i);
       channelOut78 = i;
       channelOut78Set = true;
@@ -161,7 +158,7 @@ void setup()
 
 
   // arduinoen addreseres og serieforbindelse oprettes
-  arduino = new Arduino(this, Arduino.list()[1], 57600); // [1] på JagtSkov computeren
+  arduino = new Arduino(this, "COM7"/*Arduino.list()[]*/, 57600); // COM7 på JagtSkov computeren
   for (int i = 0; i <= 13; i++) {
     arduino.pinMode(i, Arduino.INPUT);
   }
@@ -204,7 +201,7 @@ void setup()
   println("[" + Math.round(millis() / 1000) + "] multiChannelOutput");
   println("[" + Math.round(millis() / 1000) + "] build 15A282a");
   println("[" + Math.round(millis() / 1000) + "] Boottid " + millis() + " millisekunder.");
-  println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder.");
+  println("[" + Math.round(millis() / 1000) + "] Varmer PIR-sensorerne op, det tager 60 sekunder fra power on.");
 
 
   // starter ambience
